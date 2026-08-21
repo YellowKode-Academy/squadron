@@ -1,6 +1,12 @@
-# squadron
+<p align="center">
+  <img src="assets/banner.png" alt="squadron" width="100%">
+</p>
 
-**One person. A full squadron.**
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-F5D300?style=flat-square" alt="MIT"></a>
+  <img src="https://img.shields.io/badge/agents-10-3A3A3A?style=flat-square" alt="10 agents">
+  <img src="https://img.shields.io/badge/skills-5-3A3A3A?style=flat-square" alt="5 skills">
+</p>
 
 A starting point for projects run by one person and a team of AI agents, with a
 real process and documentation the agents actually obey.
