@@ -179,3 +179,5 @@ correct types.
 - Commit `.env`
 - Say it's done without running it
 - Change the contract on one side only
+- Loosen `.claude/settings.json`, a hook, or an agent's tools without review (treat
+  them like production code)

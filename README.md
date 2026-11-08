@@ -134,6 +134,17 @@ missing:
 New or edited skills are picked up live. Agents should be too; if `/agents` does
 not list one you just added, restart the session.
 
+**Headless runs (`claude -p`, CI, scheduled jobs).** Open the folder once with plain
+`claude` and accept the trust prompt. Until then, headless runs ignore every
+`permissions.allow` entry of this repository (`deny` and `ask` apply right away).
+Flags and settings keys age: this was written against the Claude Code docs of
+2026-11-07 (checked with 2.1.197).
+
+**Permissions.** `.claude/settings.json` denies reading secrets, force pushes and
+`rm -rf`, asks before push and merge, and allows only narrow commands. If you
+approve the same safe command again and again, add a narrow allow rule. Never
+widen to the whole tool. Want it stricter? Set `"defaultMode": "default"`.
+
 ---
 
 ## MCP
@@ -161,6 +172,17 @@ rhythm.
 Add whatever else you use — database, issue tracker, deployment platform — and
 declare the permission in `.claude/settings.json`.
 
+The server version is pinned and runs with `--isolated` (the browser profile
+stays in memory). `browser_run_code_unsafe` is denied and `browser_evaluate` asks.
+On Windows, if `npx` is not found by the MCP launcher, use
+`"command": "cmd", "args": ["/c", "npx", "-y", "@playwright/mcp@0.0.84", ...]`.
+
+**Before adding an MCP server:** last commit under 12 months old, more than one
+maintainer, readable source, documented tools, the narrowest scope that does the job
+(read-only if you only read), credentials via `${ENV_VAR}` and never in the file.
+Pin the version. Agents inherit every server: if only `quality-assurance` needs it,
+give it to that agent only.
+
 > `.mcp.json` stays out of Git on purpose: it may hold paths and credentials
 > specific to your machine. `.mcp.example.json` is the versioned one.
 
@@ -179,7 +201,7 @@ What you'll probably want to change:
 | `DOCS/CONTRACT.md` | the file path if it isn't `src/lib/api.ts` |
 | `DOCS/DESIGN-SYSTEM.md` | the spacing scale and the tokens |
 | `.claude/agents/*` | what each specialist always checks in **your** project |
-| `.claude/settings.json` | permissions and MCPs you actually use |
+| `.claude/settings.json` | the deny, ask and allow rules, and the MCPs you actually use |
 
 **While there are `[ ]` in the files, the repository isn't yours yet.**
 

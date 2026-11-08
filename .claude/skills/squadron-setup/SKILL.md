@@ -180,7 +180,10 @@ not to set it up.
 Add whatever else they use: database, issue tracker, deployment platform.
 
 ### `.claude/settings.json`
-Permissions and MCPs this person actually uses. Strip the rest.
+Fill the test and typecheck commands as `Bash(<command> *)` allow rules, from the
+Commands section of CLAUDE.md. Remove `mcp__playwright__*` if the project has no UI.
+Never add `Bash(*)`. Existing project that already has its own settings: show the
+diff, do not overwrite.
 
 ---
 
