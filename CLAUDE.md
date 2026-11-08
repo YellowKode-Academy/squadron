@@ -1,5 +1,7 @@
 # CLAUDE.md
 
+Squadron version: 0.2.0
+
 Rules for this project. Read every session, by me and by every agent on the squad.
 
 > **First time in this repository?** Run `/squadron-setup`. It fills this file in, adapts

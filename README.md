@@ -41,6 +41,7 @@ screen the way a user breaks it. Its ignorance is the feature.
 
 ```
 CLAUDE.md                 project rules, read every session
+CHANGELOG.md              what changed in each version
 .mcp.example.json         MCP servers the agents use
 .gitattributes            line endings (LF, CRLF for .ps1 and .cmd)
 .claude/
@@ -296,6 +297,16 @@ huge report, it undoes its own reason for existing.
 
 ---
 
+## Updating
+
+The squadron has no installer: you copy files. To update, compare your `CLAUDE.md`
+`Squadron version:` with the latest tag and read `CHANGELOG.md`. Take agents, skills
+and hooks you never edited; merge by hand the ones you did. Never overwrite
+`CLAUDE.md` or `DOCS/`: they are yours. Run `/squadron-setup adjust for the new
+version` and it lists what changed since your version.
+
+---
+
 ## Improvements welcome
 
 This repository is generic on purpose, and generic always has room to improve.
@@ -324,3 +335,7 @@ an agent squad.
 The roles weren't invented: they're the jobs on a real software team — Product
 Owner, Tech Lead, QA, DevOps, Security — each with the responsibility it has in
 real life.
+
+---
+
+Tested with Claude Code 2.1.197 on 2026-11-07.

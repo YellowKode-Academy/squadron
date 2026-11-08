@@ -44,6 +44,7 @@ ours if the project's does the same job. Report the list of collisions at the en
 |---|---|
 | `/squadron-setup` | full interview, the five questions |
 | `/squadron-setup adjust for <thing>` | touch only what that sentence asks for |
+| `/squadron-setup adjust for the new version` | read `CHANGELOG.md`, compare with `Squadron version:` in CLAUDE.md, list what changed since, and merge it without overwriting the owner's edits |
 | `/squadron-setup <file.md>` or `/squadron-setup <URL>` | read it first, then ask only what's missing |
 
 ### When a file or link comes in
