@@ -71,6 +71,16 @@ dashboard. Rules:
 - The service key never leaves the server. The client uses the public key.
 - Keep application data separate from authentication data.
 
+## Production
+
+Production data is read-only by default. Writes go through a reviewed migration or an
+approved one-off script, never an ad hoc statement. Send SQL as a file, not inline
+(quoting breaks `$`, quotes and password hashes). Migrations are idempotent and run
+on the production engine and version, not only the local one. Never edit an applied
+migration: create a new one. The application's runtime user has no DDL right; plan
+the admin step with the owner. Delete the test rows you create.
+Save any listing or response you would not read in full to a file and query a slice.
+
 ## How you report
 
 When proposing a model, deliver: the tables with columns and types, the

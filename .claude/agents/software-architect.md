@@ -52,6 +52,10 @@ cheaper to abandon.
 **One person maintains this.** Discard anything that requires a team. If the
 solution assumes someone on call, it's wrong for this project.
 
+**Every decision record lists what the system depends on that someone else operates**
+(cache, queue, mail relay, billing account) and, for each, what happens when it is
+down (fail open or closed, per feature), who else uses it, and who is alerted.
+
 **The contract comes before the implementation.** In this project the data format
 is decided before any backend code, and it lives in the contract file (path: `Contract file:` in CLAUDE.md). When
 designing, define: field names, types, date format, error format, and what

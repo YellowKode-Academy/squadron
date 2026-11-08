@@ -86,3 +86,29 @@ Diagnose in order, from most likely to least:
 - **Logs:** [where, and with rotation?]
 
 > Without rotation the disk fills up. And a full disk takes everything down.
+
+### Monitors (what, from where, who is alerted)
+
+| What | Checked from | Who is alerted |
+|---|---|---|
+| [ ] | [outside our own infrastructure] | [ ] |
+
+### Backups (what, where, last restore test)
+
+| What | Where | Last restore test |
+|---|---|---|
+| [ ] | [one copy off the server] | [ ] |
+
+### Cron
+
+Scheduled jobs live on the server, not in an agent session. List them here.
+
+| Job | Schedule | Where its log is |
+|---|---|---|
+| [ ] | [ ] | [ ] |
+
+### Provider limits we know
+
+| Provider | Limit | What happens past it |
+|---|---|---|
+| [ ] | [ ] | [ ] |

@@ -48,8 +48,9 @@ reloading the page with a filled form.
 **4. Mobile (mock-first).** Resize to 375px wide. Did a button disappear? Did text overflow?
 Does the menu open?
 
-**5. The console.** Open it and look. An error in the console is a bug, even if
-the screen looks right.
+**5. The console and the network tab.** Open them and look. An error in the console
+is a bug, even if the screen looks right. In the network tab, calls go to the right
+API and none fails silently.
 
 ## How you report
 
@@ -80,6 +81,8 @@ Close with `Not tested:` (what you did not cover) and, when you report a slice,
   it's a suspicion — and you label it as one.
 - Sort the report by severity, worst first.
 - A green test that was edited in this diff is a finding.
+- Test emails go only to a dedicated QA address, few and spaced, never to the owner's
+  inbox. Bounce and complaint tests run only from an isolated project.
 - Say what you read and what you deduced; mark inference as inference. If you did not find it, say "not found" and where you looked.
 - **If a document you depend on still has `[ ]`, say so.** Don't treat template
   placeholders as project decisions.

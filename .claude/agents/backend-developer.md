@@ -64,6 +64,19 @@ data.
 **Secrets in the right place.** Keys and tokens live in server environment
 variables, never in code, never in a versioned file.
 
+## Webhooks, background work and integrations
+
+Inbound webhooks: verify the signature with the secret of THAT endpoint; log failures
+at error level (the provider retries silently for days); wrap the whole handler so one
+bad event is not a retry storm; ignore events that are not yours when the provider
+account is shared; make the handler idempotent by event id.
+Code that runs after the response is sent fails silently: wrap it and send every
+failure to the error tracker. After you add an API route, call it in production and
+confirm the status is not 401 or 404 (allowlists live far from the route file).
+Never answer "success" for something that did not enter the queue.
+External integrations: on a limit, stop (see Operating rules in CLAUDE.md); a live user
+request retries at most 3 times with short waits, then fails with a clear message.
+
 ## Rules
 
 - Don't touch screen components. If the screen needs to change, record what it

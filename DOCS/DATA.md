@@ -65,6 +65,14 @@ dashboard.
 
 ---
 
+## Production access
+
+- **Who can write:** [ ]
+- **How production is read:** [a script on the database machine, never ad hoc]
+- **Where the admin credential lives:** [name of the place, never the value]
+
+---
+
 ## What this model makes hard
 
 > Every model makes one thing easier and another harder. Say which.

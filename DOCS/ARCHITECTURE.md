@@ -55,6 +55,14 @@ src/
   here.
 - **The contract comes before the implementation.** See `DOCS/CONTRACT.md`.
 
+## Shared dependencies
+
+What the system uses that someone else operates.
+
+| Dependency | If it is down | Fail open or closed | Other users | Who is alerted |
+|---|---|---|---|---|
+| [ ] | [ ] | [ ] | [ ] | [ ] |
+
 ## What was refused
 
 | Request | Why not | What we did instead |
