@@ -63,7 +63,7 @@ from.
 
 | Skill | When to use it |
 |---|---|
-| `/setup` | configure the repository, and re-adjust when something changes |
+| `/squadron-setup` | configure the repository, and re-adjust when something changes |
 | `/product-manager` | I don't know what to do next |
 | `/spec` | I need the spec before building |
 | `/tech-lead` | I know what I want built |
@@ -92,7 +92,7 @@ cp .mcp.example.json .mcp.json
 **2. Configure it.** Open Claude Code in the folder and run:
 
 ```
-/setup
+/squadron-setup
 ```
 
 It looks at what already exists in the directory, asks five questions about your
@@ -112,15 +112,15 @@ Each one changes something real — above all **which agents get deleted**.
 missing:
 
 ```
-/setup PRD.md
-/setup https://link-to-your-document
+/squadron-setup PRD.md
+/squadron-setup https://link-to-your-document
 ```
 
 **Something changed later?** Run it again, pointing at what changed:
 
 ```
-/setup adjust for we now have a database
-/setup adjust for another person joined the team
+/squadron-setup adjust for we now have a database
+/squadron-setup adjust for another person joined the team
 ```
 
 **3. Start.** The first useful thing is almost never code:
@@ -130,6 +130,9 @@ missing:
 /spec <feature>     →  write it before building
 /tech-lead <thing>  →  build it
 ```
+
+New or edited skills are picked up live. Agents should be too; if `/agents` does
+not list one you just added, restart the session.
 
 ---
 

@@ -1,6 +1,6 @@
 ---
-name: setup
-description: Configures or re-adjusts this repository for the project at hand. Asks five questions, fills in CLAUDE.md and the documents, and recommends which agents to delete. Also accepts a file or link describing the project. Use it the first time and whenever something changes. Invoke with /setup, or /setup adjust for <thing>, or /setup <file.md or URL>.
+name: squadron-setup
+description: Configures or re-adjusts this repository for the project at hand. Asks five questions, fills in CLAUDE.md and the documents, and recommends which agents to delete. Also accepts a file or link describing the project. Use it the first time and whenever something changes. Invoke with /squadron-setup, or /squadron-setup adjust for <thing>, or /squadron-setup <file.md or URL>.
 ---
 
 # Setup
@@ -38,13 +38,28 @@ As you build the plan, using what you found:
 On a re-run this matters even more: don't recommend deleting what is already
 deleted, and don't recreate what someone removed on purpose.
 
+## Then: check for name collisions
+
+This repository ships skills and agents under common names (`spec`, `tech-lead`,
+`product-manager`, `scrum-master`, `checkup`, `ship`). If the project already has
+something with the same name, one of them hides the other.
+
+List, and compare by name:
+- `.claude/skills/*/`, `.claude/commands/*.md` and `.claude/agents/*.md` of this
+  project;
+- the same three folders under `~/.claude/` (personal ones).
+
+On a match: **the project's own wins.** Do not overwrite it. Say which squadron
+file was skipped, and offer to rename ours with a `squadron-` prefix, or to delete
+ours if the project's does the same job. Report the list of collisions at the end.
+
 ## Three modes
 
 | How it was called | What to do |
 |---|---|
-| `/setup` | full interview, the five questions |
-| `/setup adjust for <thing>` | touch only what that sentence asks for |
-| `/setup <file.md>` or `/setup <URL>` | read it first, then ask only what's missing |
+| `/squadron-setup` | full interview, the five questions |
+| `/squadron-setup adjust for <thing>` | touch only what that sentence asks for |
+| `/squadron-setup <file.md>` or `/squadron-setup <URL>` | read it first, then ask only what's missing |
 
 ### When a file or link comes in
 
@@ -116,7 +131,7 @@ the question shouldn't exist.
 | An API or server logic | `backend-developer` |
 | A database | `data-engineer` |
 | Deploy you run yourself | `devops-engineer` |
-| None of that yet | delete nothing now; run `/setup` again when it shows up |
+| None of that yet | delete nothing now; run `/squadron-setup` again when it shows up |
 
 If it ships on a platform that handles everything, `devops-engineer` goes.
 
@@ -219,7 +234,7 @@ The next step is almost always one of these:
 - Clarity → `/spec <first-feature>`
 - Existing project, messy → pull the scattered data into the contract
 
-**Remind them they can come back:** `/setup adjust for <what changed>` at any
+**Remind them they can come back:** `/squadron-setup adjust for <what changed>` at any
 time. Do not suggest deleting this skill.
 
 ---

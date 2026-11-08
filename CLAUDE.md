@@ -2,10 +2,10 @@
 
 Rules for this project. Read every session, by me and by every agent on the squad.
 
-> **First time in this repository?** Run `/setup`. It fills this file in, adapts
+> **First time in this repository?** Run `/squadron-setup`. It fills this file in, adapts
 > the rules to your context, and tells you which agents to delete.
 >
-> **Something changed since?** `/setup adjust for <what changed>`. Someone joined
+> **Something changed since?** `/squadron-setup adjust for <what changed>`. Someone joined
 > the team, a database appeared, the product became something else: run it again.
 >
 > **While there are `[ ]` here, this project is not configured yet.** If you are
@@ -133,7 +133,7 @@ product-manager        what now, and why
 
 | Situation | Command |
 |---|---|
-| First time, or something changed | `/setup` |
+| First time, or something changed | `/squadron-setup` |
 | I don't know what to do next | `/product-manager` |
 | I know what I want built | `/tech-lead` |
 | I need the spec first | `/spec <feature>` |
