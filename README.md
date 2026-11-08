@@ -5,7 +5,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-F5D300?style=flat-square" alt="MIT"></a>
   <img src="https://img.shields.io/badge/agents-10-3A3A3A?style=flat-square" alt="10 agents">
-  <img src="https://img.shields.io/badge/skills-5-3A3A3A?style=flat-square" alt="5 skills">
+  <img src="https://img.shields.io/badge/skills-7-3A3A3A?style=flat-square" alt="7 skills">
 </p>
 
 A starting point for projects run by one person and a team of AI agents, with a
@@ -46,7 +46,7 @@ CLAUDE.md                 project rules, read every session
 .claude/
 ├── hooks/                guard hooks (Node) and their tests
 ├── agents/               10 specialists, each with its own context
-└── skills/               5 conductors, running in the main conversation
+└── skills/               7 skills, running in the main conversation
 DOCS/
 ├── PRD.md                the product, for whom, and what it does NOT do
 ├── CONTRACT.md           the contract and its rules
@@ -58,7 +58,7 @@ DOCS/
     └── _TEMPLATE.md      the IFO spec
 ```
 
-### The five skills
+### The seven skills
 
 They run in the main conversation. That's the only place agents can be dispatched
 from.
@@ -70,6 +70,8 @@ from.
 | `/spec` | I need the spec before building |
 | `/tech-lead` | I know what I want built |
 | `/scrum-master` | just organizing the board |
+| `/checkup` | how is the live project, with numbers |
+| `/ship` | put it in production, with the guards |
 
 ### The ten agents
 
@@ -260,6 +262,9 @@ Honest suggestions:
 - **No interface?** Delete `ux-designer` and `frontend-developer`.
 - **Working alone with no board?** Delete `scrum-master`.
 - **Never evaluating new technology?** Delete `researcher`.
+- **No deploy of your own?** Delete `ship` (and `devops-engineer`).
+- **Nothing in production yet?** Delete `checkup`.
+- **No Node?** Delete the hooks (see Requirements).
 
 An agent you never call is not neutral: it costs context and pollutes the choice.
 Delete without guilt, you can always bring it back.

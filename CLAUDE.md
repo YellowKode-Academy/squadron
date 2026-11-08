@@ -135,6 +135,8 @@ Who is on the team: the files in `.claude/agents/`. Default list in README.
 | I know what I want built | `/tech-lead` |
 | I need the spec first | `/spec <feature>` |
 | Just organizing the board | `/scrum-master` |
+| How is the live project doing | `/checkup` |
+| Put a change in production | `/ship` |
 
 Running three layers to change a button color is bureaucracy, not process.
 

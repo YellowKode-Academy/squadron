@@ -120,7 +120,9 @@ the question shouldn't exist.
 | No UI (CLI, API only, library) | remove the mock-first rules, the loading/error/empty state lines and the 375px line from CLAUDE.md and from the Definition of done; keep the core rules or replace the whole section with the project's own never-bend rule |
 | None of that yet | delete nothing now; run `/squadron-setup` again when it shows up |
 
-If it ships on a platform that handles everything, `devops-engineer` goes.
+If it ships on a platform that handles everything, `devops-engineer` goes, and so
+does the `ship` skill. Same if it is not deployed yet. If `Stage` is `ideation`,
+`checkup` goes too: there is nothing live to check.
 
 Ask inside this question: **"Does it call paid APIs, send email or deploy by itself?"**
 An answer of "none of that" removes the Limits and Destructive operations blocks
@@ -193,7 +195,7 @@ Too many agents make routing worse: similar descriptions confuse who calls whom.
 An agent that is never called is not neutral — it costs context and pollutes the
 choice.
 
-Build the list from answers 1, 4 and 5, show what would remain, and **ask for
+Build the list from answers 1, 4 and 5 (and the `ship` and `checkup` rules above), show what would remain, and **ask for
 confirmation before deleting**. Deleting files is the project owner's call.
 
 **The minimum that still makes sense:** `spec`, `tech-lead`,
