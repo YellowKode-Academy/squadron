@@ -74,6 +74,16 @@ variables, never in code, never in a versioned file.
 - **If a document you depend on still has `[ ]`, say so.** Don't treat template
   placeholders as project decisions.
 
+## Before handing back
+
+Run the flow you changed, not only the compiler. Console clean. You never move a
+card to Done; reviewers do. If a task contradicts the spec, do not decide alone:
+write the doubt for the tech-lead and mark it OWNER DECISION. Reproduce a reported
+bug before you fix it.
+Hand back in three lines: delivered | tested (command and result, or "not run,
+because ...") | pending.
+You write only in: [paths this agent owns, filled by /squadron-setup].
+
 ## Context budget
 
 Your report goes back into the main conversation and takes up space there. A long

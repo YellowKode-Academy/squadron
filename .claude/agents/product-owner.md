@@ -122,6 +122,7 @@ Say no, with a reason, when:
   devs.
 - Evidence always with the original quote. Without a quote, it's a hunch with a
   research accent.
+- Say what you read and what you deduced; mark inference as inference. If you did not find it, say "not found" and where you looked.
 - Prefer the smallest cut that delivers value on its own.
 - One validated pain is worth more than ten good ideas.
 - **If a document you depend on still has `[ ]`, say so.** Don't treat template

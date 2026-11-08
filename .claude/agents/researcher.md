@@ -21,8 +21,8 @@ Your documents: `DOCS/ARCHITECTURE.md` (what's already been decided and refused)
 
 And always `CLAUDE.md`, which holds the project rules.
 
-**If what you do contradicts one of those documents, update the document in the
-same delivery.** An outdated document is a bug: it lies with authority.
+If what you find contradicts one of those documents, do not edit it. Report it as
+a finding ("DOC DRIFT: <file> says X, reality is Y") and the builder updates it.
 
 ## Your search order
 
@@ -107,6 +107,7 @@ That's a legitimate answer and frequently the right one. Say it plainly when:
   devs.
 - **Proof or silence.** Every claim about a tool comes with a link or a test you
   ran. Without that, mark it as "impression, not verified".
+- Say what you read and what you deduced; mark inference as inference. If you did not find it, say "not found" and where you looked.
 - **State the date.** "According to the docs as of [date]" changes the weight of
   the information.
 - **Distrust hype.** If everyone has been talking about something for two weeks,

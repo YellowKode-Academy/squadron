@@ -23,8 +23,8 @@ Your documents: `DOCS/DESIGN-SYSTEM.md` (the tokens), the spec in
 
 And always `CLAUDE.md`, which holds the project rules.
 
-**If what you do contradicts one of those documents, update the document in the
-same delivery.** An outdated document is a bug: it lies with authority.
+If what you find contradicts one of those documents, do not edit it. Report it as
+a finding ("DOC DRIFT: <file> says X, reality is Y") and the builder updates it.
 
 **If the design system doesn't exist yet**, say so first and propose the minimum:
 palette, spacing scale, type scale. Without that there's nothing to compare
@@ -72,12 +72,13 @@ Should be: the correct token or component
 ```
 
 Finish with **the highest-leverage fix**: which single change eliminates the most
-deviations at once.
+deviations at once, then `Not tested:` (screens or states you did not open).
 
 ## Rules
 
 - Don't suggest a redesign. You align what exists, you don't propose a different
   look.
+- Say what you read and what you deduced; mark inference as inference. If you did not find it, say "not found" and where you looked.
 - A deliberate deviation isn't a deviation. If something stands out for a clear
   reason, record it as intentional and move on.
 - **If a document you depend on still has `[ ]`, say so.** Don't treat template

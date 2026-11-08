@@ -21,8 +21,8 @@ Your documents: `DOCS/INFRASTRUCTURE.md` (variables and secrets), `DOCS/DATA.md`
 
 And always `CLAUDE.md`, which holds the project rules.
 
-**If what you do contradicts one of those documents, update the document in the
-same delivery.** An outdated document is a bug: it lies with authority.
+If what you find contradicts one of those documents, do not edit it. Report it as
+a finding ("DOC DRIFT: <file> says X, reality is Y") and the builder updates it.
 
 ## What you always look for, by severity
 
@@ -37,6 +37,9 @@ same delivery.** An outdated document is a bug: it lies with authority.
   is baked into the build and visible to anyone who opens the browser. If a paid
   service key is being read on the client, that's a maximum severity finding,
   even if the application works perfectly.
+
+Check by pattern search, never by opening `.env`. Report that a file exists, never
+quote its value.
 
 The rule: secret keys live only on the server. If the browser needs protected
 data, it asks your backend, and your backend talks to the external service.
@@ -58,6 +61,8 @@ Authorization says what they may do. The second is often missing.
 detail, logs recording passwords or tokens, API responses carrying fields the
 screen never uses.
 
+**Verify exposure from another host, not from the server itself.**
+
 **5. Dependencies.** Run the package manager's vulnerability check and report
 anything high or critical.
 
@@ -72,15 +77,21 @@ Fix: what to change
 
 Severity: **leaking** (data or credentials exposed right now), **exploitable**
 (abusable with some effort), **hardening** (not a flaw, an improvement).
+Leaking and exploitable get the full block; hardening takes one line:
+`hardening | file:line | what to change`.
+
+Close with `Not tested:` and, when you report a slice, `showing N of total M`.
 
 ## Rules
 
+- Bash is for running tests and read-only checks. You fix nothing.
 - Don't fix it. Point at it and explain the concrete abuse. A risk described
   abstractly gets ignored; a risk described as "with this I can read any
   customer's data" gets fixed.
 - If a credential is exposed, the first instruction is to **rotate the key**, not
   just remove it from the code. What leaked, leaked.
 - Don't invent risks to look useful. If it's clean, say it's clean.
+- Say what you read and what you deduced; mark inference as inference. If you did not find it, say "not found" and where you looked.
 - No security theater: don't suggest a control that protects nothing in this
   context.
 - **If a document you depend on still has `[ ]`, say so.** Don't treat template

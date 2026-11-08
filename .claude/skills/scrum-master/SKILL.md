@@ -79,7 +79,7 @@ A card only reaches Done after passing both reviewers, in this order:
    card goes back to Building. **Annoyance** and **nitpick** become new cards in
    the backlog; they don't hold the delivery.
 
-Run them in this order, one after the other. On a big card, the order matters.
+They share one browser: run them one after the other, ux-designer first.
 
 ### Review the cycle
 

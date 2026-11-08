@@ -214,6 +214,8 @@ Once the stack is known, swap generic for specific where it changes the outcome:
 - `data-engineer`: the real database and the policies it uses
 - `devops-engineer`: the real provider
 - `ux-designer`: whether a component library already exists
+- builders (`frontend-developer`, `backend-developer`, `data-engineer`): fill the
+  `You write only in:` line with the paths each one owns
 
 Don't rewrite whole agents.
 
