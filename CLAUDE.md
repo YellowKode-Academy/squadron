@@ -68,21 +68,25 @@ the same delivery.
 
 ## The rule that never bends: the contract
 
-**All data goes through `src/lib/api.ts`. No exceptions.**
+**All data crosses the system through one contract. No exceptions.**
 
-That file is not throwaway code, it is **the contract**: it declares what the
-backend must return, and the frontend consumes it without knowing whether the
-data is mocked or real.
+Contract file: [src/lib/api.ts]
 
-Four rules, none of them optional:
+Every agent reads the path from this line. The contract declares what the backend
+returns and what the frontend consumes. Whether the data behind it is mocked or real
+is invisible to the screens.
 
-1. **Every function is `async`**, even when returning a mock. Born `async`, lives
-   `async`.
-2. **A deliberate 300ms delay** in the mock. Without it you build the whole app
-   with no loading state and only find out when you wire up the real thing.
-3. **A way to force an error.** The error screen is the one nobody builds, and
-   the only one the user sees on their worst day.
-4. **No mocked data outside that file.** None.
+Core rules (always):
+1. The contract lives in one place (one file or one folder). Data shapes are not
+   declared anywhere else.
+2. Every call is asynchronous, mocked or real.
+3. The error path can be forced on demand.
+4. No fake data outside the contract.
+
+Mock-first rules (only while there is no real backend; `/squadron-setup` removes
+this block otherwise):
+5. The mock waits about 300 ms, so loading states get built.
+6. Screens handle loading, error and empty.
 
 Details in `DOCS/CONTRACT.md`.
 
@@ -98,10 +102,10 @@ Nothing is called done without this:
 
 - [ ] The IFO spec exists and is current
 - [ ] Every acceptance criterion answers yes
-- [ ] All three states exist: loading, error, empty
+- [ ] All three states exist: loading, error, empty (mock-first)
 - [ ] `ux-designer` passed, or the findings became cards
 - [ ] `quality-assurance` passed with no **blocker** findings
-- [ ] No new mocked data outside `src/lib/api.ts`
+- [ ] No new fake data outside the contract file
 - [ ] Backend returns exactly what the contract declares
 - [ ] Works on mobile at 375px
 - [ ] Console is clean
@@ -174,7 +178,7 @@ correct types.
 ## Never do this
 
 - Build without a spec
-- Put mocked data outside `src/lib/api.ts`
+- Put fake data outside the contract file
 - Put a secret key in the frontend: it gets baked into the build and is visible
 - Commit `.env` (blocked by a hook)
 - Commit on main (blocked by a hook)

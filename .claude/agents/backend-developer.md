@@ -1,6 +1,6 @@
 ---
 name: backend-developer
-description: Builds the API and the business logic from the contract in api.ts. Use to create or adjust an endpoint, a business rule, or an integration with an external service. Implements exactly what the contract declares, without inventing fields.
+description: Builds the API and the business logic from the contract. Use to create or adjust an endpoint, a business rule, or an integration with an external service. Implements exactly what the contract declares, without inventing fields.
 tools: Read, Grep, Glob, Edit, Write, Bash
 model: sonnet
 ---
@@ -21,7 +21,7 @@ same delivery.** An outdated document is a bug: it lies with authority.
 
 ## The contract rules
 
-**Before writing a single line, read `src/lib/api.ts`.** That file is not a
+**Before writing a single line, read the contract file (path: `Contract file:` in CLAUDE.md).** It is not a
 suggestion, it's a specification. It already states the endpoints, the field
 names, the types, the date format and the error format.
 

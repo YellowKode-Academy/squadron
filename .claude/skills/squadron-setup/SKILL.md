@@ -69,7 +69,8 @@ A lot can be discovered without bothering anyone:
 - **`.git` with history?** This is not a new project. It's adopting the process on
   a project already in motion, and that changes everything.
 - **Its own README?** Read it before asking what the project is.
-- **Does `src/lib/api.ts` exist?** The contract has already started.
+- **Is there already a contract-like file** (a typed API client, an OpenAPI spec, a
+  shared types package)? That is the candidate for "Contract file:".
 
 **Every question you ask is one you failed to answer yourself.**
 
@@ -96,7 +97,7 @@ the question shouldn't exist.
 |---|---|
 | New | it can be born right: contract and spec from day one |
 | Already exists | **do not force the process onto what's already built.** Apply it going forward. Record the current architecture as a decision, even if the reason is "it was already like this" |
-| Exists and it's a mess | start with the contract: pulling scattered data into one `api.ts` is the highest-return change |
+| Exists and it's a mess | start with the contract: pulling scattered data into one contract file is the highest-return change |
 
 ### 3. Do you already know what you're going to build?
 
@@ -116,6 +117,7 @@ the question shouldn't exist.
 | An API or server logic | `backend-developer` |
 | A database | `data-engineer` |
 | Deploy you run yourself | `devops-engineer` |
+| No UI (CLI, API only, library) | remove the mock-first rules, the loading/error/empty state lines and the 375px line from CLAUDE.md and from the Definition of done; keep the core rules or replace the whole section with the project's own never-bend rule |
 | None of that yet | delete nothing now; run `/squadron-setup` again when it shows up |
 
 If it ships on a platform that handles everything, `devops-engineer` goes.
@@ -137,7 +139,7 @@ The one with the biggest consequence.
 ### `CLAUDE.md`
 Name, what it is, stage. Real commands (take them from `package.json`).
 Conventions matching what this person actually uses. The contract path, if it
-isn't `src/lib/api.ts`.
+isn't `src/lib/api.ts`: fill the `Contract file:` line.
 
 ### `DOCS/PRD.md`
 Only what they can answer now. **Mark what stayed open** instead of guessing.
@@ -149,9 +151,10 @@ The stack, and the first decision on record. If the stack came pre-decided,
 record it as a decision anyway, with the real reason.
 
 ### The contract
-If `src/lib/api.ts` doesn't exist, create it with one sample entity following the
-four rules: `async`, 300ms delay, a way to force an error, and no mocks outside
-that file. See `DOCS/CONTRACT.md`.
+If the contract file doesn't exist **and the project has a UI and no backend**,
+create it with one sample entity following the rules: `async`, 300ms delay, a way
+to force an error, and no fake data outside that file. In the other cases, only
+record the path. See `DOCS/CONTRACT.md`.
 
 ### MCP
 If `.mcp.json` doesn't exist, copy it from `.mcp.example.json`. It ships with

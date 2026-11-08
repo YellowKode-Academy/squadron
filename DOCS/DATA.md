@@ -7,7 +7,7 @@
 
 ## The starting point
 
-The data format **was already decided** in `src/lib/api.ts`. Modeling starts
+The data format **was already decided** in the contract file. Modeling starts
 there.
 
 That doesn't mean copying it verbatim. It means **any difference between the

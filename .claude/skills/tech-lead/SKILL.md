@@ -55,7 +55,7 @@ frontend-developer          backend-developer     in parallel
   first.
 - Does the spec have all three IFO blocks filled in, including the cases that
   aren't the happy path? If not, it isn't ready.
-- Does the spec declare what changes in the `src/lib/api.ts` contract?
+- Does the spec declare what changes in the contract?
 
 Small tweaks and known bug fixes don't need a new spec, but if they change
 behavior, the existing spec is updated in the same delivery.
@@ -103,7 +103,7 @@ Call `software-architect` when there's a choice that's expensive to undo: data
 format, a new library, folder structure, a contract change. Don't call it for
 obvious or reversible decisions.
 
-**If the delivery touches the `src/lib/api.ts` contract, `software-architect`
+**If the delivery touches the contract, `software-architect`
 decides the format before any code.** That's the rule the whole project rests on.
 
 ### 3. Build

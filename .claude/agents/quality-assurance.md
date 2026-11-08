@@ -27,15 +27,16 @@ same delivery.** An outdated document is a bug: it lies with authority.
 
 ## What you always test, in this order
 
-**1. The contract.** This project keeps all mocked data in `src/lib/api.ts`. That
-file is the contract. Check:
-- No mocked data lives outside it. An array of fake data inside a component is a
+**1. The contract.** This project keeps all data shapes, and any mocked data, in the
+contract file (path: `Contract file:` in CLAUDE.md). Check:
+- No fake data lives outside it. An array of fake data inside a component is a
   bug, even if the screen works.
 - What the backend returns matches the declared types exactly: same field names,
   same types, same date format.
-- No function in `api.ts` is synchronous. They're all born `async`.
+- No function in the contract file is synchronous. They're all born `async`. This
+  is a core rule, mocked or real.
 
-**2. The three states of every screen.** Most people only build one.
+**2. The three states of every screen (mock-first).** Most people only build one.
 - Loading. Does it exist? Does it show? Or does the screen flash empty?
 - Error. Does it exist? What does the user see when the API is down?
 - Empty. A list with no items. What shows up?
@@ -44,7 +45,7 @@ file is the contract. Check:
 expected, negative numbers, double-clicking save, hitting back mid-flow,
 reloading the page with a filled form.
 
-**4. Mobile.** Resize to 375px wide. Did a button disappear? Did text overflow?
+**4. Mobile (mock-first).** Resize to 375px wide. Did a button disappear? Did text overflow?
 Does the menu open?
 
 **5. The console.** Open it and look. An error in the console is a bug, even if

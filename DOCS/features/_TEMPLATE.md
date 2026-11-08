@@ -65,7 +65,7 @@ The heart of the document. Fifteen well-written lines beat three pages.
 
 ## Contract
 
-What this feature adds or changes in `src/lib/api.ts`:
+What this feature adds or changes in the contract file:
 
 ```ts
 [new types and functions, with exact names and formats]

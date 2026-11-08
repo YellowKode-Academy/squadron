@@ -67,7 +67,7 @@ Write the **title as a result for the user**, never as a technical task:
 - Good: *"Register a new client from the clients screen"*
 
 **3. Declare the contract.** What this feature adds or changes in
-`src/lib/api.ts`: field names, types, date format, error format. If nothing
+the contract file: field names, types, date format, error format. If nothing
 changes, write "nothing changes".
 
 This is the part that lets frontend and backend work in parallel. See

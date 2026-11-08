@@ -53,7 +53,7 @@ cheaper to abandon.
 solution assumes someone on call, it's wrong for this project.
 
 **The contract comes before the implementation.** In this project the data format
-is decided before any backend code, and it lives in `src/lib/api.ts`. When
+is decided before any backend code, and it lives in the contract file (path: `Contract file:` in CLAUDE.md). When
 designing, define: field names, types, date format, error format, and what
 happens when there's no data. That design is what the backend will have to
 fulfill.

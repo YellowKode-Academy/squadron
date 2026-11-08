@@ -26,10 +26,10 @@ This repository applies three things that fix that:
 **1. Nothing is built without a spec.** The IFO method: Input, Flow, Output.
 Fifteen lines that force you to think before something very quick thinks for you.
 
-**2. All data goes through a contract.** A single `src/lib/api.ts` holds
-everything that comes in and out. It stops being throwaway code and becomes the
-specification the backend fulfills. Consequence: frontend and backend work in
-parallel without talking to each other.
+**2. All data goes through a contract.** A single contract file (by default
+`src/lib/api.ts`) holds everything that comes in and out. It stops being throwaway
+code and becomes the specification the backend fulfills. Consequence: frontend and
+backend work in parallel without talking to each other.
 
 **3. Separate roles, with isolated context.** A QA that knows what the code was
 meant to do tests the happy path. A QA that arrives with no context breaks the
@@ -49,7 +49,7 @@ CLAUDE.md                 project rules, read every session
 └── skills/               5 conductors, running in the main conversation
 DOCS/
 ├── PRD.md                the product, for whom, and what it does NOT do
-├── CONTRACT.md           api.ts and the four rules
+├── CONTRACT.md           the contract and its rules
 ├── ARCHITECTURE.md       decisions, each with its cost declared
 ├── DESIGN-SYSTEM.md      tokens: color, spacing, typography
 ├── DATA.md               schema, migrations, access policies
@@ -235,7 +235,7 @@ What you'll probably want to change:
 | Where | What |
 |---|---|
 | `CLAUDE.md` | everything in brackets, the conventions, the commands |
-| `DOCS/CONTRACT.md` | the file path if it isn't `src/lib/api.ts` |
+| `CLAUDE.md` `Contract file:` line | the contract path if it isn't `src/lib/api.ts` |
 | `DOCS/DESIGN-SYSTEM.md` | the spacing scale and the tokens |
 | `.claude/agents/*` | what each specialist always checks in **your** project |
 | `.claude/settings.json` | the deny, ask and allow rules, and the MCPs you actually use |
@@ -279,10 +279,11 @@ failing halfway. If you created a new agent, it reads the description and uses i
 
 If you change everything else, keep these two. They're what makes the rest work.
 
-**The contract.** All data in one file, every function `async`, a deliberate 300ms
-delay in the mock, and a way to force an error. The delay sounds trivial and is
-the most important rule: with it you're forced to build the loading state;
-without it your app only works on an internet that doesn't exist.
+**The contract.** All data crosses one contract: one place for the shapes, every call
+asynchronous, an error you can force. While the backend is still a mock, add a
+deliberate 300ms delay. It sounds trivial and is the most important mock-first
+rule: with it you are forced to build the loading state; without it your app only
+works on an internet that doesn't exist.
 
 **The agents' context budget.** Each one has a line limit on its report. A
 subagent exists to hold volume away from the main conversation — if it returns a

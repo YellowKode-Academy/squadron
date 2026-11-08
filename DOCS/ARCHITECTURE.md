@@ -19,7 +19,7 @@
 ```
 src/
 ├── lib/
-│   └── api.ts        ← the contract. see DOCS/CONTRACT.md
+│   └── api.ts        ← the contract (example path). see DOCS/CONTRACT.md
 ├── [ ]
 └── [ ]
 ```
