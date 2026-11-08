@@ -223,6 +223,14 @@ Don't rewrite whole agents.
 
 ## When you finish
 
+First, prove the guards work. Run `node --version` and `git --version`. If Node is
+missing, say that the hooks are inert and offer to remove the `hooks` block. Then
+exercise each guard once on purpose: `node --test .claude/hooks/hooks.test.mjs`,
+and ask to read `.env`. Report pass/fail per guard. A guard that was never
+exercised is a guess.
+
+Then report:
+
 ```
 Found on my own: what you read without needing to ask
 Configured: what was filled in

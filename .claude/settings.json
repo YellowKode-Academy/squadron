@@ -3,24 +3,85 @@
   "permissions": {
     "defaultMode": "acceptEdits",
     "allow": [
-      "Read", "Glob", "Grep", "Agent",
-      "Bash(git status *)", "Bash(git diff *)", "Bash(git log *)",
-      "Bash(git add *)", "Bash(git commit *)", "Bash(git switch *)", "Bash(git checkout -b *)",
-      "PowerShell(git status *)", "PowerShell(git diff *)", "PowerShell(git log *)",
-      "PowerShell(git add *)", "PowerShell(git commit *)", "PowerShell(git switch *)", "PowerShell(git checkout -b *)",
+      "Read",
+      "Glob",
+      "Grep",
+      "Agent",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git switch *)",
+      "Bash(git checkout -b *)",
+      "PowerShell(git status *)",
+      "PowerShell(git diff *)",
+      "PowerShell(git log *)",
+      "PowerShell(git add *)",
+      "PowerShell(git commit *)",
+      "PowerShell(git switch *)",
+      "PowerShell(git checkout -b *)",
       "mcp__playwright__*"
     ],
     "ask": [
-      "Bash(git push *)", "Bash(git merge *)", "Bash(git reset --hard *)", "Bash(git clean *)",
-      "PowerShell(git push *)", "PowerShell(git merge *)", "PowerShell(git reset --hard *)", "PowerShell(git clean *)",
+      "Bash(git push *)",
+      "Bash(git merge *)",
+      "Bash(git reset --hard *)",
+      "Bash(git clean *)",
+      "PowerShell(git push *)",
+      "PowerShell(git merge *)",
+      "PowerShell(git reset --hard *)",
+      "PowerShell(git clean *)",
       "mcp__playwright__browser_evaluate"
     ],
     "deny": [
-      "Read(./.env)", "Read(./.env.local)", "Read(./.env.development)", "Read(./.env.production)",
-      "Read(./**/*.pem)", "Read(./.mcp.json)",
-      "Bash(rm -rf *)", "Bash(git push --force *)", "Bash(git push -f *)",
-      "PowerShell(git push --force *)", "PowerShell(git push -f *)",
+      "Read(./.env)",
+      "Read(./.env.local)",
+      "Read(./.env.development)",
+      "Read(./.env.production)",
+      "Read(./**/*.pem)",
+      "Read(./.mcp.json)",
+      "Bash(rm -rf *)",
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "PowerShell(git push --force *)",
+      "PowerShell(git push -f *)",
       "mcp__playwright__browser_run_code_unsafe"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/guard-git.mjs\"",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Edit|Write|Grep|Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/guard-secrets.mjs\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/scan-prompt.mjs\"",
+            "timeout": 5
+          }
+        ]
+      }
     ]
   }
 }

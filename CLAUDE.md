@@ -176,8 +176,12 @@ correct types.
 - Build without a spec
 - Put mocked data outside `src/lib/api.ts`
 - Put a secret key in the frontend: it gets baked into the build and is visible
-- Commit `.env`
+- Commit `.env` (blocked by a hook)
+- Commit on main (blocked by a hook)
 - Say it's done without running it
 - Change the contract on one side only
 - Loosen `.claude/settings.json`, a hook, or an agent's tools without review (treat
   them like production code)
+
+These hooks cover Bash, PowerShell and the file tools. If you add an MCP tool that
+can commit or write files, add its matcher too.

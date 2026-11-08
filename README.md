@@ -42,7 +42,9 @@ screen the way a user breaks it. Its ignorance is the feature.
 ```
 CLAUDE.md                 project rules, read every session
 .mcp.example.json         MCP servers the agents use
+.gitattributes            line endings (LF, CRLF for .ps1 and .cmd)
 .claude/
+├── hooks/                guard hooks (Node) and their tests
 ├── agents/               10 specialists, each with its own context
 └── skills/               5 conductors, running in the main conversation
 DOCS/
@@ -147,6 +149,30 @@ widen to the whole tool. Want it stricter? Set `"defaultMode": "default"`.
 
 ---
 
+## Requirements
+
+The guard hooks need **Node >= 20** and **git** on the PATH. No npm packages. Check
+that they run, not only that they exist (on Windows, `python3` can be a Store stub
+that does nothing; `node --version` must print a version):
+
+```bash
+node --version
+node --test .claude/hooks/hooks.test.mjs
+```
+
+The hooks block a commit on main, a force push, a recursive delete outside the
+project, reading or printing `.env` and key files, a commit that adds a secret
+(`commit -a` included) and a prompt that contains one. Each fails closed: input
+they cannot parse is blocked, not allowed.
+
+Honest limit: Claude Code only blocks when a hook exits with code 2. If `node` is
+missing, the hook command fails with another code and the action goes through. On
+Claude Code 2.1.295 or later you can add `"onFailure": "block"` to each hook
+entry in `settings.json` to block in that case too; without Node that blocks every
+shell command, so install Node or delete the `hooks` block.
+
+---
+
 ## MCP
 
 `.mcp.example.json` ships with **Playwright**, which is what lets agents open the
@@ -202,6 +228,7 @@ What you'll probably want to change:
 | `DOCS/DESIGN-SYSTEM.md` | the spacing scale and the tokens |
 | `.claude/agents/*` | what each specialist always checks in **your** project |
 | `.claude/settings.json` | the deny, ask and allow rules, and the MCPs you actually use |
+| `.claude/hooks/` | Needs Node >= 20. No Node? Delete the `hooks` block in `settings.json`: the deny and ask rules still protect you, the hooks do not |
 
 **While there are `[ ]` in the files, the repository isn't yours yet.**
 
