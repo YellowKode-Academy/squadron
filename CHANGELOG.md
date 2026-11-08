@@ -19,7 +19,9 @@ Your project's version is the `Squadron version:` line in `CLAUDE.md`.
   narrow allow. Playwright MCP pinned and isolated.
 - Guard hooks in Node with tests: no commit on main, no force push, no recursive
   delete outside the project, no reading or committing secrets, no secret in a
-  prompt. They fail closed. Need Node >= 20.
+  prompt. They fail closed on input they can't read. They need Node >= 20; without
+  Node, Claude Code lets the call through unless you opt into `onFailure` (see the
+  README).
 - One copy of each fact: team discovery, definition of done and the agent table.
 - The contract file is configurable (`Contract file:` in `CLAUDE.md`). Rules split
   into core and mock-first.
