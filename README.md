@@ -5,7 +5,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-F5D300?style=flat-square" alt="MIT"></a>
   <img src="https://img.shields.io/badge/agents-10-3A3A3A?style=flat-square" alt="10 agents">
-  <img src="https://img.shields.io/badge/skills-5-3A3A3A?style=flat-square" alt="5 skills">
+  <img src="https://img.shields.io/badge/skills-7-3A3A3A?style=flat-square" alt="7 skills">
 </p>
 
 A starting point for projects run by one person and a team of AI agents, with a
@@ -26,10 +26,10 @@ This repository applies three things that fix that:
 **1. Nothing is built without a spec.** The IFO method: Input, Flow, Output.
 Fifteen lines that force you to think before something very quick thinks for you.
 
-**2. All data goes through a contract.** A single `src/lib/api.ts` holds
-everything that comes in and out. It stops being throwaway code and becomes the
-specification the backend fulfills. Consequence: frontend and backend work in
-parallel without talking to each other.
+**2. All data goes through a contract.** A single contract file (by default
+`src/lib/api.ts`) holds everything that comes in and out. It stops being throwaway
+code and becomes the specification the backend fulfills. Consequence: frontend and
+backend work in parallel without talking to each other.
 
 **3. Separate roles, with isolated context.** A QA that knows what the code was
 meant to do tests the happy path. A QA that arrives with no context breaks the
@@ -41,13 +41,16 @@ screen the way a user breaks it. Its ignorance is the feature.
 
 ```
 CLAUDE.md                 project rules, read every session
+CHANGELOG.md              what changed in each version
 .mcp.example.json         MCP servers the agents use
+.gitattributes            line endings (LF, CRLF for .ps1 and .cmd)
 .claude/
+├── hooks/                guard hooks (Node) and their tests
 ├── agents/               10 specialists, each with its own context
-└── skills/               5 conductors, running in the main conversation
+└── skills/               7 skills, running in the main conversation
 DOCS/
 ├── PRD.md                the product, for whom, and what it does NOT do
-├── CONTRACT.md           api.ts and the four rules
+├── CONTRACT.md           the contract and its rules
 ├── ARCHITECTURE.md       decisions, each with its cost declared
 ├── DESIGN-SYSTEM.md      tokens: color, spacing, typography
 ├── DATA.md               schema, migrations, access policies
@@ -56,24 +59,37 @@ DOCS/
     └── _TEMPLATE.md      the IFO spec
 ```
 
-### The five skills
+### The seven skills
 
 They run in the main conversation. That's the only place agents can be dispatched
 from.
 
 | Skill | When to use it |
 |---|---|
-| `/setup` | configure the repository, and re-adjust when something changes |
+| `/squadron-setup` | configure the repository, and re-adjust when something changes |
 | `/product-manager` | I don't know what to do next |
 | `/spec` | I need the spec before building |
 | `/tech-lead` | I know what I want built |
 | `/scrum-master` | just organizing the board |
+| `/checkup` | how is the live project, with numbers |
+| `/ship` | put it in production, with the guards |
 
 ### The ten agents
 
-`product-owner` · `researcher` · `software-architect` · `frontend-developer` ·
-`backend-developer` · `data-engineer` · `ux-designer` · `quality-assurance` ·
-`security-engineer` · `devops-engineer`
+Default list. The truth is the files in `.claude/agents/`.
+
+| Agent | Answers for |
+|---|---|
+| `product-owner` | is the pain real? whose? worth building? |
+| `researcher` | has this been solved? how? what does it cost? |
+| `software-architect` | how to build it, and what not to build |
+| `frontend-developer` | the interface, consuming only the contract |
+| `backend-developer` | the API, fulfilling the contract exactly |
+| `data-engineer` | schema, migrations, access policies |
+| `ux-designer` | visual consistency |
+| `quality-assurance` | where this breaks |
+| `security-engineer` | what can leak or be exploited |
+| `devops-engineer` | how it leaves here and stays up |
 
 ---
 
@@ -92,7 +108,7 @@ cp .mcp.example.json .mcp.json
 **2. Configure it.** Open Claude Code in the folder and run:
 
 ```
-/setup
+/squadron-setup
 ```
 
 It looks at what already exists in the directory, asks five questions about your
@@ -112,15 +128,15 @@ Each one changes something real — above all **which agents get deleted**.
 missing:
 
 ```
-/setup PRD.md
-/setup https://link-to-your-document
+/squadron-setup PRD.md
+/squadron-setup https://link-to-your-document
 ```
 
 **Something changed later?** Run it again, pointing at what changed:
 
 ```
-/setup adjust for we now have a database
-/setup adjust for another person joined the team
+/squadron-setup adjust for we now have a database
+/squadron-setup adjust for another person joined the team
 ```
 
 **3. Start.** The first useful thing is almost never code:
@@ -130,6 +146,44 @@ missing:
 /spec <feature>     →  write it before building
 /tech-lead <thing>  →  build it
 ```
+
+New or edited skills are picked up live. Agents should be too; if `/agents` does
+not list one you just added, restart the session.
+
+**Headless runs (`claude -p`, CI, scheduled jobs).** Open the folder once with plain
+`claude` and accept the trust prompt. Until then, headless runs ignore every
+`permissions.allow` entry of this repository (`deny` and `ask` apply right away).
+Flags and settings keys age: this was written against the Claude Code docs of
+2026-11-07 (checked with 2.1.197).
+
+**Permissions.** `.claude/settings.json` denies reading secrets, force pushes and
+`rm -rf`, asks before push and merge, and allows only narrow commands. If you
+approve the same safe command again and again, add a narrow allow rule. Never
+widen to the whole tool. Want it stricter? Set `"defaultMode": "default"`.
+
+---
+
+## Requirements
+
+The guard hooks need **Node >= 20** and **git** on the PATH. No npm packages. Check
+that they run, not only that they exist (on Windows, `python3` can be a Store stub
+that does nothing; `node --version` must print a version):
+
+```bash
+node --version
+node --test .claude/hooks/hooks.test.mjs
+```
+
+The hooks block a commit on main, a force push, a recursive delete outside the
+project, reading or printing `.env` and key files, a commit that adds a secret
+(`commit -a` included) and a prompt that contains one. Each fails closed: input
+they cannot parse is blocked, not allowed.
+
+Honest limit: Claude Code only blocks when a hook exits with code 2. If `node` is
+missing, the hook command fails with another code and the action goes through. On
+Claude Code 2.1.295 or later you can add `"onFailure": "block"` to each hook
+entry in `settings.json` to block in that case too; without Node that blocks every
+shell command, so install Node or delete the `hooks` block.
 
 ---
 
@@ -158,6 +212,17 @@ rhythm.
 Add whatever else you use — database, issue tracker, deployment platform — and
 declare the permission in `.claude/settings.json`.
 
+The server version is pinned and runs with `--isolated` (the browser profile
+stays in memory). `browser_run_code_unsafe` is denied and `browser_evaluate` asks.
+On Windows, if `npx` is not found by the MCP launcher, use
+`"command": "cmd", "args": ["/c", "npx", "-y", "@playwright/mcp@0.0.84", ...]`.
+
+**Before adding an MCP server:** last commit under 12 months old, more than one
+maintainer, readable source, documented tools, the narrowest scope that does the job
+(read-only if you only read), credentials via `${ENV_VAR}` and never in the file.
+Pin the version. Agents inherit every server: if only `quality-assurance` needs it,
+give it to that agent only.
+
 > `.mcp.json` stays out of Git on purpose: it may hold paths and credentials
 > specific to your machine. `.mcp.example.json` is the versioned one.
 
@@ -173,10 +238,11 @@ What you'll probably want to change:
 | Where | What |
 |---|---|
 | `CLAUDE.md` | everything in brackets, the conventions, the commands |
-| `DOCS/CONTRACT.md` | the file path if it isn't `src/lib/api.ts` |
+| `CLAUDE.md` `Contract file:` line | the contract path if it isn't `src/lib/api.ts` |
 | `DOCS/DESIGN-SYSTEM.md` | the spacing scale and the tokens |
 | `.claude/agents/*` | what each specialist always checks in **your** project |
-| `.claude/settings.json` | permissions and MCPs you actually use |
+| `.claude/settings.json` | the deny, ask and allow rules, and the MCPs you actually use |
+| `.claude/hooks/` | Needs Node >= 20. No Node? Delete the `hooks` block in `settings.json`: the deny and ask rules still protect you, the hooks do not |
 
 **While there are `[ ]` in the files, the repository isn't yours yet.**
 
@@ -197,6 +263,9 @@ Honest suggestions:
 - **No interface?** Delete `ux-designer` and `frontend-developer`.
 - **Working alone with no board?** Delete `scrum-master`.
 - **Never evaluating new technology?** Delete `researcher`.
+- **No deploy of your own?** Delete `ship` (and `devops-engineer`).
+- **Nothing in production yet?** Delete `checkup`.
+- **No Node?** Delete the hooks (see Requirements).
 
 An agent you never call is not neutral: it costs context and pollutes the choice.
 Delete without guilt, you can always bring it back.
@@ -216,14 +285,25 @@ failing halfway. If you created a new agent, it reads the description and uses i
 
 If you change everything else, keep these two. They're what makes the rest work.
 
-**The contract.** All data in one file, every function `async`, a deliberate 300ms
-delay in the mock, and a way to force an error. The delay sounds trivial and is
-the most important rule: with it you're forced to build the loading state;
-without it your app only works on an internet that doesn't exist.
+**The contract.** All data crosses one contract: one place for the shapes, every call
+asynchronous, an error you can force. While the backend is still a mock, add a
+deliberate 300ms delay. It sounds trivial and is the most important mock-first
+rule: with it you are forced to build the loading state; without it your app only
+works on an internet that doesn't exist.
 
 **The agents' context budget.** Each one has a line limit on its report. A
 subagent exists to hold volume away from the main conversation — if it returns a
 huge report, it undoes its own reason for existing.
+
+---
+
+## Updating
+
+The squadron has no installer: you copy files. To update, compare your `CLAUDE.md`
+`Squadron version:` with the latest tag and read `CHANGELOG.md`. Take agents, skills
+and hooks you never edited; merge by hand the ones you did. Never overwrite
+`CLAUDE.md` or `DOCS/`: they are yours. Run `/squadron-setup adjust for the new
+version` and it lists what changed since your version.
 
 ---
 
@@ -255,3 +335,7 @@ an agent squad.
 The roles weren't invented: they're the jobs on a real software team — Product
 Owner, Tech Lead, QA, DevOps, Security — each with the responsibility it has in
 real life.
+
+---
+
+Tested with Claude Code 2.1.197 on 2026-11-07.

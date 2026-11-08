@@ -16,22 +16,7 @@ hand, instead of one person doing everything at once.
 
 ## First: see who's on the team
 
-**Before planning anything**, list `.claude/agents/` and read the `name` and
-`description` of each file.
-
-**Do not trust the list written in this skill.** This repository exists to be
-pruned: agents may have been deleted, and new agents may have been created for
-this project. The folder is the truth; what is written here is only the default
-expectation.
-
-As you build the plan, using what you found:
-
-- **An agent that's gone** → do not silently invent a replacement. Say which step
-  is now uncovered and move on. If it's small, do it yourself and say so.
-- **An agent you didn't know about** → read its description and use it if it
-  fits. Someone created it for a reason, and that reason belongs to this project.
-- **The folder is empty or nearly so** → do the work in the main conversation and
-  say clearly that you are working without the team.
+Follow **Team discovery** in CLAUDE.md before planning anything.
 
 The board columns have to reflect who exists. A column with no owner is a column
 where cards rot.
@@ -40,15 +25,7 @@ where cards rot.
 
 ## The team
 
-| Role | Who | Type |
-|---|---|---|
-| Product Manager | skill `product-manager` | direction and priority |
-| Product Owner | agent `product-owner` | finds the pain, writes the card |
-| Tech Lead | skill `tech-lead` | orchestrates delivery |
-| Scrum Master | this skill | runs the process |
-| Devs | `frontend-developer`, `backend-developer` | build |
-| Design | agent `ux-designer` | checks visual consistency |
-| QA | agent `quality-assurance` | tries to break it |
+Who is on the team: the files in `.claude/agents/`. Default list in README.
 
 **Why QA and Design are agents and not skills:** they need their own context. A QA
 that knows what the code was meant to do tests the happy path. A QA that arrives
@@ -102,8 +79,7 @@ A card only reaches Done after passing both reviewers, in this order:
    card goes back to Building. **Annoyance** and **nitpick** become new cards in
    the backlog; they don't hold the delivery.
 
-Run both in parallel only when the card is small. On a big card, the order
-matters.
+They share one browser: run them one after the other, ux-designer first.
 
 ### Review the cycle
 
@@ -138,14 +114,7 @@ L doesn't enter the cycle. Split it first.
 
 ## Definition of done
 
-A card is done when, and only when:
-
-- [ ] Every acceptance criterion answers yes
-- [ ] `ux-designer` passed, or the findings became cards
-- [ ] `quality-assurance` passed with no **blocker** findings
-- [ ] No new mocked data outside `src/lib/api.ts`
-- [ ] Works on mobile at 375px
-- [ ] Console is clean
+See CLAUDE.md. A card moves to Done only when every line is checked or justified.
 
 ## Rules
 

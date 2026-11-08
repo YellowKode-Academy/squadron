@@ -1,6 +1,6 @@
 ---
-name: setup
-description: Configures or re-adjusts this repository for the project at hand. Asks five questions, fills in CLAUDE.md and the documents, and recommends which agents to delete. Also accepts a file or link describing the project. Use it the first time and whenever something changes. Invoke with /setup, or /setup adjust for <thing>, or /setup <file.md or URL>.
+name: squadron-setup
+description: Configures or re-adjusts this repository for the project at hand. Asks five questions, fills in CLAUDE.md and the documents, and recommends which agents to delete. Also accepts a file or link describing the project. Use it the first time and whenever something changes. Invoke with /squadron-setup, or /squadron-setup adjust for <thing>, or /squadron-setup <file.md or URL>.
 ---
 
 # Setup
@@ -18,33 +18,34 @@ again.
 
 ## First: see who's on the team
 
-**Before planning anything**, list `.claude/agents/` and read the `name` and
-`description` of each file.
-
-**Do not trust the list written in this skill.** This repository exists to be
-pruned: agents may have been deleted, and new agents may have been created for
-this project. The folder is the truth; what is written here is only the default
-expectation.
-
-As you build the plan, using what you found:
-
-- **An agent that's gone** → do not silently invent a replacement. Say which step
-  is now uncovered and move on. If it's small, do it yourself and say so.
-- **An agent you didn't know about** → read its description and use it if it
-  fits. Someone created it for a reason, and that reason belongs to this project.
-- **The folder is empty or nearly so** → do the work in the main conversation and
-  say clearly that you are working without the team.
+Follow **Team discovery** in CLAUDE.md before planning anything.
 
 On a re-run this matters even more: don't recommend deleting what is already
 deleted, and don't recreate what someone removed on purpose.
+
+## Then: check for name collisions
+
+This repository ships skills and agents under common names (`spec`, `tech-lead`,
+`product-manager`, `scrum-master`, `checkup`, `ship`). If the project already has
+something with the same name, one of them hides the other.
+
+List, and compare by name:
+- `.claude/skills/*/`, `.claude/commands/*.md` and `.claude/agents/*.md` of this
+  project;
+- the same three folders under `~/.claude/` (personal ones).
+
+On a match: **the project's own wins.** Do not overwrite it. Say which squadron
+file was skipped, and offer to rename ours with a `squadron-` prefix, or to delete
+ours if the project's does the same job. Report the list of collisions at the end.
 
 ## Three modes
 
 | How it was called | What to do |
 |---|---|
-| `/setup` | full interview, the five questions |
-| `/setup adjust for <thing>` | touch only what that sentence asks for |
-| `/setup <file.md>` or `/setup <URL>` | read it first, then ask only what's missing |
+| `/squadron-setup` | full interview, the five questions |
+| `/squadron-setup adjust for <thing>` | touch only what that sentence asks for |
+| `/squadron-setup adjust for the new version` | read `CHANGELOG.md`, compare with `Squadron version:` in CLAUDE.md, list what changed since, and merge it without overwriting the owner's edits |
+| `/squadron-setup <file.md>` or `/squadron-setup <URL>` | read it first, then ask only what's missing |
 
 ### When a file or link comes in
 
@@ -69,7 +70,8 @@ A lot can be discovered without bothering anyone:
 - **`.git` with history?** This is not a new project. It's adopting the process on
   a project already in motion, and that changes everything.
 - **Its own README?** Read it before asking what the project is.
-- **Does `src/lib/api.ts` exist?** The contract has already started.
+- **Is there already a contract-like file** (a typed API client, an OpenAPI spec, a
+  shared types package)? That is the candidate for "Contract file:".
 
 **Every question you ask is one you failed to answer yourself.**
 
@@ -96,7 +98,7 @@ the question shouldn't exist.
 |---|---|
 | New | it can be born right: contract and spec from day one |
 | Already exists | **do not force the process onto what's already built.** Apply it going forward. Record the current architecture as a decision, even if the reason is "it was already like this" |
-| Exists and it's a mess | start with the contract: pulling scattered data into one `api.ts` is the highest-return change |
+| Exists and it's a mess | start with the contract: pulling scattered data into one contract file is the highest-return change |
 
 ### 3. Do you already know what you're going to build?
 
@@ -116,9 +118,16 @@ the question shouldn't exist.
 | An API or server logic | `backend-developer` |
 | A database | `data-engineer` |
 | Deploy you run yourself | `devops-engineer` |
-| None of that yet | delete nothing now; run `/setup` again when it shows up |
+| No UI (CLI, API only, library) | remove the mock-first rules, the loading/error/empty state lines and the 375px line from CLAUDE.md and from the Definition of done; keep the core rules or replace the whole section with the project's own never-bend rule |
+| None of that yet | delete nothing now; run `/squadron-setup` again when it shows up |
 
-If it ships on a platform that handles everything, `devops-engineer` goes.
+If it ships on a platform that handles everything, `devops-engineer` goes, and so
+does the `ship` skill. Same if it is not deployed yet. If `Stage` is `ideation`,
+`checkup` goes too: there is nothing live to check.
+
+Ask inside this question: **"Does it call paid APIs, send email or deploy by itself?"**
+An answer of "none of that" removes the Limits and Destructive operations blocks
+from the Operating rules in CLAUDE.md. Any other answer keeps them.
 
 ### 5. Will it handle logins, payments, or personal data?
 
@@ -137,7 +146,13 @@ The one with the biggest consequence.
 ### `CLAUDE.md`
 Name, what it is, stage. Real commands (take them from `package.json`).
 Conventions matching what this person actually uses. The contract path, if it
-isn't `src/lib/api.ts`.
+isn't `src/lib/api.ts`: fill the `Contract file:` line.
+
+### Gotchas in `CLAUDE.md`
+Ask: "Anything that has to be updated in two places, or fails only in production?"
+Write each answer as "when you add X, also update Y". Leave the example out when
+there is nothing to record. Remove the Operating rules that do not apply (no
+deploy, no paid API, no UI).
 
 ### `DOCS/PRD.md`
 Only what they can answer now. **Mark what stayed open** instead of guessing.
@@ -149,9 +164,10 @@ The stack, and the first decision on record. If the stack came pre-decided,
 record it as a decision anyway, with the real reason.
 
 ### The contract
-If `src/lib/api.ts` doesn't exist, create it with one sample entity following the
-four rules: `async`, 300ms delay, a way to force an error, and no mocks outside
-that file. See `DOCS/CONTRACT.md`.
+If the contract file doesn't exist **and the project has a UI and no backend**,
+create it with one sample entity following the rules: `async`, 300ms delay, a way
+to force an error, and no fake data outside that file. In the other cases, only
+record the path. See `DOCS/CONTRACT.md`.
 
 ### MCP
 If `.mcp.json` doesn't exist, copy it from `.mcp.example.json`. It ships with
@@ -165,7 +181,10 @@ not to set it up.
 Add whatever else they use: database, issue tracker, deployment platform.
 
 ### `.claude/settings.json`
-Permissions and MCPs this person actually uses. Strip the rest.
+Fill the test and typecheck commands as `Bash(<command> *)` allow rules, from the
+Commands section of CLAUDE.md. Remove `mcp__playwright__*` if the project has no UI.
+Never add `Bash(*)`. Existing project that already has its own settings: show the
+diff, do not overwrite.
 
 ---
 
@@ -177,7 +196,7 @@ Too many agents make routing worse: similar descriptions confuse who calls whom.
 An agent that is never called is not neutral — it costs context and pollutes the
 choice.
 
-Build the list from answers 1, 4 and 5, show what would remain, and **ask for
+Build the list from answers 1, 4 and 5 (and the `ship` and `checkup` rules above), show what would remain, and **ask for
 confirmation before deleting**. Deleting files is the project owner's call.
 
 **The minimum that still makes sense:** `spec`, `tech-lead`,
@@ -198,12 +217,22 @@ Once the stack is known, swap generic for specific where it changes the outcome:
 - `data-engineer`: the real database and the policies it uses
 - `devops-engineer`: the real provider
 - `ux-designer`: whether a component library already exists
+- builders (`frontend-developer`, `backend-developer`, `data-engineer`): fill the
+  `You write only in:` line with the paths each one owns
 
 Don't rewrite whole agents.
 
 ---
 
 ## When you finish
+
+First, prove the guards work. Run `node --version` and `git --version`. If Node is
+missing, say that the hooks are inert and offer to remove the `hooks` block. Then
+exercise each guard once on purpose: `node --test .claude/hooks/hooks.test.mjs`,
+and ask to read `.env`. Report pass/fail per guard. A guard that was never
+exercised is a guess.
+
+Then report:
 
 ```
 Found on my own: what you read without needing to ask
@@ -219,7 +248,7 @@ The next step is almost always one of these:
 - Clarity → `/spec <first-feature>`
 - Existing project, messy → pull the scattered data into the contract
 
-**Remind them they can come back:** `/setup adjust for <what changed>` at any
+**Remind them they can come back:** `/squadron-setup adjust for <what changed>` at any
 time. Do not suggest deleting this skill.
 
 ---

@@ -7,7 +7,7 @@
 
 ## The starting point
 
-The data format **was already decided** in `src/lib/api.ts`. Modeling starts
+The data format **was already decided** in the contract file. Modeling starts
 there.
 
 That doesn't mean copying it verbatim. It means **any difference between the
@@ -62,6 +62,14 @@ dashboard.
 | # | What it does | Date |
 |---|---|---|
 | [ ] | [ ] | [ ] |
+
+---
+
+## Production access
+
+- **Who can write:** [ ]
+- **How production is read:** [a script on the database machine, never ad hoc]
+- **Where the admin credential lives:** [name of the place, never the value]
 
 ---
 

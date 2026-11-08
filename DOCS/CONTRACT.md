@@ -1,4 +1,10 @@
-# The contract · `src/lib/api.ts`
+# The contract
+
+Default location: `src/lib/api.ts`. The real path is the `Contract file:` line in
+`CLAUDE.md`.
+
+The first three rules below and the last one are core. The 300ms delay is
+mock-first: it matters while the backend is still fake.
 
 > The central rule of this project. If you only read one document in this folder,
 > read this one.
@@ -26,7 +32,7 @@ fits in thirty lines.
 ## What it looks like
 
 ```ts
-// src/lib/api.ts
+// src/lib/api.ts  (example path)
 
 export type Client = {
   id: string
@@ -106,10 +112,10 @@ file and works.
 | Request | Result |
 |---|---|
 | *"build me a clients backend"* | invents `created_at` where the frontend expects `createdAt`, wraps it in `{ data: [...] }`, and you spend the afternoon fixing it |
-| *"read `api.ts` and implement exactly this contract"* | gets it right, because nothing was left to guess |
+| *"read the contract file and implement exactly this contract"* | gets it right, because nothing was left to guess |
 
 **The AI wasn't getting it wrong because it's dumb. It was getting it wrong
-because nobody had told it what right was.** `api.ts` is you telling it.
+because nobody had told it what right was.** The contract is you telling it.
 
 ---
 
@@ -132,7 +138,7 @@ on purpose, and the document is updated with it.
 
 > Fill this in as the project moves.
 
-- **File:** `src/lib/api.ts`
+- **File:** [same as `Contract file:` in CLAUDE.md]
 - **Entities declared:** [list]
 - **Still mocked:** [list]
 - **Already real:** [list]

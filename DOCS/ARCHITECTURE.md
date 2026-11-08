@@ -19,7 +19,7 @@
 ```
 src/
 ├── lib/
-│   └── api.ts        ← the contract. see DOCS/CONTRACT.md
+│   └── api.ts        ← the contract (example path). see DOCS/CONTRACT.md
 ├── [ ]
 └── [ ]
 ```
@@ -54,6 +54,14 @@ src/
 - **One person maintains this.** A solution that assumes someone on call is wrong
   here.
 - **The contract comes before the implementation.** See `DOCS/CONTRACT.md`.
+
+## Shared dependencies
+
+What the system uses that someone else operates.
+
+| Dependency | If it is down | Fail open or closed | Other users | Who is alerted |
+|---|---|---|---|---|
+| [ ] | [ ] | [ ] | [ ] | [ ] |
 
 ## What was refused
 
