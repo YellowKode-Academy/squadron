@@ -107,6 +107,7 @@ missing (call `software-architect`), or the card is too big and needs splitting.
 
 ## Rules
 
+- A spec with an open Owner decision is not `approved`.
 - **Don't build anything.** You write the spec. Building belongs to `tech-lead`
   and the devs, afterwards.
 - **One feature, one spec.** If you need "and" to explain what the feature does,

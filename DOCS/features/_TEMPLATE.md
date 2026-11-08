@@ -78,9 +78,10 @@ What this feature adds or changes in the contract file:
 ## Acceptance criteria
 
 Each line answerable yes or no by someone else, with no interpretation.
+Each one has a `Check:` (the command, test or screen that proves it).
 
-- [ ] [verifiable behavior]
-- [ ] [verifiable behavior]
+- [ ] [verifiable behavior]. Check: [command, test or screen]
+- [ ] [verifiable behavior]. Check: [command, test or screen]
 - [ ] Loading: [what appears while the data hasn't arrived]
 - [ ] Error: [what appears when it fails, and how to retry]
 - [ ] Empty: [what appears with no items, and the way out for the person]
@@ -105,6 +106,16 @@ rework and the one almost everyone skips.]
 | Decision | Why | What we gave up |
 |---|---|---|
 | [what] | [reason] | [cost] |
+
+---
+
+## Owner decisions (open)
+
+> An ambiguous business rule is not fixed by an agent. Mark it, ask, wait.
+
+| Question | Reading A | Reading B | Decided (date) |
+|---|---|---|---|
+| [what] | [..] | [..] | |
 
 ---
 

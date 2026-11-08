@@ -122,6 +122,10 @@ the question shouldn't exist.
 
 If it ships on a platform that handles everything, `devops-engineer` goes.
 
+Ask inside this question: **"Does it call paid APIs, send email or deploy by itself?"**
+An answer of "none of that" removes the Limits and Destructive operations blocks
+from the Operating rules in CLAUDE.md. Any other answer keeps them.
+
 ### 5. Will it handle logins, payments, or personal data?
 
 The one with the biggest consequence.
@@ -140,6 +144,12 @@ The one with the biggest consequence.
 Name, what it is, stage. Real commands (take them from `package.json`).
 Conventions matching what this person actually uses. The contract path, if it
 isn't `src/lib/api.ts`: fill the `Contract file:` line.
+
+### Gotchas in `CLAUDE.md`
+Ask: "Anything that has to be updated in two places, or fails only in production?"
+Write each answer as "when you add X, also update Y". Leave the example out when
+there is nothing to record. Remove the Operating rules that do not apply (no
+deploy, no paid API, no UI).
 
 ### `DOCS/PRD.md`
 Only what they can answer now. **Mark what stayed open** instead of guessing.
