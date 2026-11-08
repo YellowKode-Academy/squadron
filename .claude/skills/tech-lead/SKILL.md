@@ -1,6 +1,6 @@
 ---
 name: tech-lead
-description: Orchestrates the whole squad to deliver something end to end. You ask for what you want and it calls product-owner, researcher, software-architect, frontend-developer, backend-developer, data-engineer, ux-designer, quality-assurance and security-engineer in the right order, decides what to skip, merges the results and answers for all of it. Invoke with /tech-lead followed by what needs to be delivered.
+description: Runs a delivery end to end by dispatching the agents found in `.claude/agents/`: decides who to call and who to skip, merges the results and answers for the outcome. Use for "build X". Not for deciding what to build (product-manager) or for writing the spec (spec). Invoke with /tech-lead followed by what to deliver.
 ---
 
 # Tech Lead
@@ -16,22 +16,7 @@ orchestration lives here and not inside a subagent.
 
 ## First: see who's on the team
 
-**Before planning anything**, list `.claude/agents/` and read the `name` and
-`description` of each file.
-
-**Do not trust the list written in this skill.** This repository exists to be
-pruned: agents may have been deleted, and new agents may have been created for
-this project. The folder is the truth; what is written here is only the default
-expectation.
-
-As you build the plan, using what you found:
-
-- **An agent that's gone** → do not silently invent a replacement. Say which step
-  is now uncovered and move on. If it's small, do it yourself and say so.
-- **An agent you didn't know about** → read its description and use it if it
-  fits. Someone created it for a reason, and that reason belongs to this project.
-- **The folder is empty or nearly so** → do the work in the main conversation and
-  say clearly that you are working without the team.
+Follow **Team discovery** in CLAUDE.md before planning anything.
 
 Only build the pipeline after this. A plan that calls a nonexistent agent fails
 halfway and wastes the whole round.
@@ -169,16 +154,7 @@ isn't the code: it's the card. Send it back to `product-owner`.
 
 ## Definition of done
 
-- [ ] Every acceptance criterion answers yes
-- [ ] `ux-designer` passed, or the findings became cards
-- [ ] `quality-assurance` passed with no **blocker** findings
-- [ ] No new mocked data outside `src/lib/api.ts`
-- [ ] Backend returns exactly what the contract declares
-- [ ] Works on mobile at 375px
-- [ ] Console is clean
-- [ ] If it touches credentials: `security-engineer` passed
-- [ ] The IFO spec exists and is current
-- [ ] Affected documents in `DOCS/` updated
+See CLAUDE.md. A card moves to Done only when every line is checked or justified.
 
 ## Rules
 
@@ -188,23 +164,6 @@ isn't the code: it's the card. Send it back to `product-owner`.
   wastes real time.
 - **Don't hide what failed.** If an agent came back with nothing useful, or
   something was left half done, that goes in the report.
-
-## Who's who
-
-> **Default expectation, not truth.** Check it against `.claude/agents/` before
-> using this table: this project's team may have been pruned or extended.
-
-| Agent | Answers for |
-|---|---|
-| `product-owner` | is the pain real? whose? worth building? |
-| `researcher` | has this been solved? how? what does it cost? |
-| `software-architect` | how to build it, and what not to build |
-| `frontend-developer` | the interface, consuming only the contract |
-| `backend-developer` | the API, fulfilling the contract exactly |
-| `data-engineer` | schema, migrations, access policies |
-| `ux-designer` | visual consistency |
-| `quality-assurance` | where this breaks |
-| `security-engineer` | what can leak or be exploited |
 
 Process, board and rituals belong to the `scrum-master` skill. This one is
 delivery. The spec that precedes everything belongs to the `spec` skill.

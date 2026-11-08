@@ -73,9 +73,20 @@ from.
 
 ### The ten agents
 
-`product-owner` · `researcher` · `software-architect` · `frontend-developer` ·
-`backend-developer` · `data-engineer` · `ux-designer` · `quality-assurance` ·
-`security-engineer` · `devops-engineer`
+Default list. The truth is the files in `.claude/agents/`.
+
+| Agent | Answers for |
+|---|---|
+| `product-owner` | is the pain real? whose? worth building? |
+| `researcher` | has this been solved? how? what does it cost? |
+| `software-architect` | how to build it, and what not to build |
+| `frontend-developer` | the interface, consuming only the contract |
+| `backend-developer` | the API, fulfilling the contract exactly |
+| `data-engineer` | schema, migrations, access policies |
+| `ux-designer` | visual consistency |
+| `quality-assurance` | where this breaks |
+| `security-engineer` | what can leak or be exploited |
+| `devops-engineer` | how it leaves here and stays up |
 
 ---
 

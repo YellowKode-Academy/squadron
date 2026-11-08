@@ -15,22 +15,7 @@ decide **direction** and hand off to whoever executes.
 
 ## First: see who's on the team
 
-**Before planning anything**, list `.claude/agents/` and read the `name` and
-`description` of each file.
-
-**Do not trust the list written in this skill.** This repository exists to be
-pruned: agents may have been deleted, and new agents may have been created for
-this project. The folder is the truth; what is written here is only the default
-expectation.
-
-As you build the plan, using what you found:
-
-- **An agent that's gone** → do not silently invent a replacement. Say which step
-  is now uncovered and move on. If it's small, do it yourself and say so.
-- **An agent you didn't know about** → read its description and use it if it
-  fits. Someone created it for a reason, and that reason belongs to this project.
-- **The folder is empty or nearly so** → do the work in the main conversation and
-  say clearly that you are working without the team.
+Follow **Team discovery** in CLAUDE.md before planning anything.
 
 This also tells you what this project can actually execute. There's no point
 prioritizing a front nobody here covers.

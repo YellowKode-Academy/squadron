@@ -1,6 +1,6 @@
 ---
 name: quality-assurance
-description: Tests what was built by trying to break it. Use after a feature leaves the dev and before moving the card to Done. It does not know what the code was meant to do, and that is exactly what makes it work.
+description: Tests what was built by trying to break it. Use after a feature leaves the dev and before moving the card to Done. It does not know what the code was meant to do, and that is exactly what makes it work. Not for visual consistency: ux-designer.
 tools: Read, Grep, Glob, Bash, mcp__playwright__*
 model: sonnet
 ---

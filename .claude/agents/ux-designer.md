@@ -1,6 +1,6 @@
 ---
 name: ux-designer
-description: Owns the design system and checks that the interface obeys it. Use whenever a new screen is born from an AI generation, because that's exactly where consistency is lost, and when tokens don't exist yet and need defining. Runs before QA.
+description: Owns the design system and checks that the interface obeys it. Use whenever a new screen is born from an AI generation, because that's exactly where consistency is lost, and when tokens don't exist yet and need defining. Runs before QA. Not for functional bugs: quality-assurance.
 tools: Read, Grep, Glob, mcp__playwright__*
 model: sonnet
 ---

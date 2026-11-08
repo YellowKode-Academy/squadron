@@ -1,6 +1,6 @@
 ---
 name: software-architect
-description: Decides how to build something before anyone starts building, and records why. Use when there's a stack choice, a data format, or any decision that's expensive to undo later. Also reviews a decision already made that's causing friction.
+description: Decides how to build something before anyone starts building, and records why. Use when there's a stack choice, a data format, or any decision that's expensive to undo later. Also reviews a decision already made that's causing friction. Not for comparing tools on the market: researcher.
 tools: Read, Grep, Glob, WebSearch
 model: opus
 ---

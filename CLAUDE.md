@@ -11,6 +11,10 @@ Rules for this project. Read every session, by me and by every agent on the squa
 > **While there are `[ ]` here, this project is not configured yet.** If you are
 > an agent and you hit a `[ ]` in a document you depend on, say so instead of
 > assuming a value.
+>
+> Before adding a line here: does it change behavior in every task, and will
+> someone update it when reality changes? If not, it is a prompt or a document,
+> not a rule.
 
 ---
 
@@ -116,18 +120,7 @@ product-manager        what now, and why
        └── tech-lead      delivery, and it dispatches the agents
 ```
 
-| Agent | Answers for |
-|---|---|
-| `product-owner` | is the pain real? whose? worth building? |
-| `researcher` | has this been solved? how? what does it cost? |
-| `software-architect` | how to build it, and what not to build |
-| `frontend-developer` | the interface, consuming only the contract |
-| `backend-developer` | the API, fulfilling the contract exactly |
-| `data-engineer` | schema, migrations, access policies |
-| `ux-designer` | visual consistency |
-| `quality-assurance` | where this breaks |
-| `security-engineer` | what can leak or be exploited |
-| `devops-engineer` | how it leaves here and stays up |
+Who is on the team: the files in `.claude/agents/`. Default list in README.
 
 **Enter at the right level:**
 
@@ -141,9 +134,16 @@ product-manager        what now, and why
 
 Running three layers to change a button color is bureaucracy, not process.
 
-**The table above is the default expectation.** The truth is whatever is in
-`.claude/agents/`. Every skill starts by reading that folder, so you can delete
-or add agents without breaking anything.
+## Team discovery
+
+Before planning, list `.claude/agents/` and read each file's `name` and `description`.
+**The folder is the truth**; any list written elsewhere is only the default
+expectation, because this repository is meant to be pruned.
+- An agent that is gone: do not invent a replacement. Say which step is now
+  uncovered. If it is small, do it yourself and say so.
+- An agent you did not know about: read its description and use it if it fits.
+- The folder is empty or nearly so: work in the main conversation and say you are
+  working without the team.
 
 ---
 

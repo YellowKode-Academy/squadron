@@ -1,6 +1,6 @@
 ---
 name: product-owner
-description: Finds real pain from real people and turns it into a card with acceptance criteria. Use before building anything, to validate that the problem exists, and whenever something lands in the backlog too vague to pick up. This is who represents the customer inside the team.
+description: Finds real pain from real people and turns it into a card with acceptance criteria. Use before building anything, to validate that the problem exists, and whenever something lands in the backlog too vague to pick up. This is who represents the customer inside the team. Not for technology questions: researcher.
 tools: Read, Grep, Glob, WebSearch, WebFetch, mcp__playwright__*
 model: sonnet
 ---
