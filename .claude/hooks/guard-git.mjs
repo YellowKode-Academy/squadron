@@ -2,9 +2,10 @@
 //   - git commit on main or master (also `git -C dir commit`, `a && git commit`)
 //   - git push --force / -f / +refspec (--force-with-lease passes)
 //   - recursive rm / Remove-Item aimed at /, ~, $HOME, ., .., * or outside the project
+// Text inside quotes is data (a JSON test payload is not a git call) unless a shell wrapper runs it.
 // Triggered by: node "${CLAUDE_PROJECT_DIR}/.claude/hooks/guard-git.mjs"
 import path from 'node:path';
-import { block, readPayload, projectDir, workDir, findGit, tokens, segments, gitDir, git } from './lib.mjs';
+import { block, readPayload, projectDir, workDir, findGit, innerCommands, tokens, segments, gitDir, git } from './lib.mjs';
 
 const payload = readPayload();
 const tool = payload.tool_name;
@@ -14,10 +15,17 @@ if (typeof command !== 'string') block('Guard hook got no command string. Blocki
 
 const cwd = workDir(payload);
 
-// 1. Commit on main or master.
+// 1. Commit on main or master. The git user.name values in SQUADRON_MAIN_COMMITTERS (comma list,
+// case-insensitive, set in .claude/settings.json "env") may commit on main. Empty or unset = nobody.
+// This guards against accidents, not against someone who rewrites their own git config.
+const MAIN_COMMITTERS = new Set(String(process.env.SQUADRON_MAIN_COMMITTERS || '')
+  .split(',').map((s) => s.trim().toLowerCase()).filter(Boolean));
 for (const c of findGit(command, 'commit')) {
-  const r = git(gitDir(c.opts, cwd), ['symbolic-ref', '--short', 'HEAD']);
+  const dir = gitDir(c.opts, cwd);
+  const r = git(dir, ['symbolic-ref', '--short', 'HEAD']);
   if (r.ok && /^(main|master)$/.test(r.out.trim())) {
+    const who = git(dir, ['config', 'user.name']);
+    if (who.ok && MAIN_COMMITTERS.has(who.out.trim().toLowerCase())) continue;
     block('Commit on main is blocked. Create a branch (`git switch -c <name>`), commit there.');
   }
 }
@@ -62,7 +70,8 @@ function dangerous(target) {
   return !inside(resolved, projectDir(payload));
 }
 
-for (const seg of segments(command)) {
+// Also looks inside bash -c / eval / powershell -Command wrappers; other quoted text is data.
+for (const seg of [command, ...innerCommands(command)].flatMap(segments)) {
   let t = tokens(seg);
   while (t.length && ['sudo', 'env', 'command'].includes(t[0].toLowerCase())) t = t.slice(1);
   if (!t.length || !RM_NAMES.has(t[0].toLowerCase())) continue;

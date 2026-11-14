@@ -46,9 +46,12 @@ before(() => {
 
 after(() => rmSync(root, { recursive: true, force: true }));
 
-function run(script, payload, { cwd, raw, project } = {}) {
+function run(script, payload, { cwd, raw, project, committers } = {}) {
   const input = raw !== undefined ? raw : JSON.stringify(payload);
   const env = { ...process.env, CLAUDE_PROJECT_DIR: project ?? cwd ?? root };
+  // The session may set the allow list (settings.json env); tests choose it explicitly.
+  delete env.SQUADRON_MAIN_COMMITTERS;
+  if (committers !== undefined) env.SQUADRON_MAIN_COMMITTERS = committers;
   const r = spawnSync(process.execPath, [path.join(here, script)], { input, encoding: 'utf8', env, cwd: root });
   return { code: r.status, stderr: r.stderr };
 }
@@ -102,13 +105,69 @@ test('force push is blocked, force-with-lease passes', () => {
   assert.equal(guardGit('git push origin feature/x', featRepo).code, 0);
 });
 
+test('commit on main passes only for a git user.name in SQUADRON_MAIN_COMMITTERS', () => {
+  const ownerRepo = makeRepo('owner-repo', 'main');
+  spawnSync('git', ['-C', ownerRepo, 'config', 'user.name', 'Owner Name']);
+  const asOwner = (list) => run('guard-git.mjs', bash('git commit -m x', ownerRepo), { cwd: ownerRepo, committers: list });
+  assert.equal(asOwner(undefined).code, 2, 'unset = nobody');
+  assert.equal(asOwner('').code, 2, 'empty = nobody');
+  assert.equal(asOwner('someone else').code, 2);
+  assert.equal(asOwner('owner name').code, 0, 'case-insensitive');
+  assert.equal(asOwner('x, Owner Name ,y').code, 0, 'comma list with spaces');
+  // inherited env must not leak into a case that sets nothing
+  const saved = process.env.SQUADRON_MAIN_COMMITTERS;
+  process.env.SQUADRON_MAIN_COMMITTERS = 'Owner Name';
+  try { assert.equal(asOwner(undefined).code, 2); } finally {
+    if (saved === undefined) delete process.env.SQUADRON_MAIN_COMMITTERS; else process.env.SQUADRON_MAIN_COMMITTERS = saved;
+  }
+});
+
+test('force push text inside quoted data is not a git call (G1)', () => {
+  // String.raw: these are shell command lines, quotes and all.
+  for (const cmd of [
+    String.raw`node -e "run({command:'git push --force'})"`,
+    String.raw`echo '{"command":"git push -f origin main"}' > case.json`,
+    String.raw`echo "git push --force" > notes.txt`,
+    "cat <<'EOF' > case.json\n{\"command\":\"git push -f origin main\"}\nEOF",
+    String.raw`printf %s "git push origin +main" > case.txt`,
+  ]) {
+    assert.equal(guardGit(cmd, featRepo).code, 0, cmd);
+  }
+  assert.equal(guardGit('echo "git commit -m x" > case.txt', mainRepo).code, 0);
+});
+
+test('force push hidden inside a shell wrapper is still blocked', () => {
+  for (const cmd of [
+    'bash -c "git push --force"',
+    "sh -c 'git push -f origin main'",
+    'bash -lc "cd x && git push --force"',
+    'eval "git push --force"',
+    "eval 'git push origin +main'",
+    'powershell -Command "git push --force"',
+    'pwsh -c "git push -f"',
+    'cmd /c "git push --force"',
+    'cmd.exe /c git push --force',
+    'echo "git push --force" | bash',
+    'bash <<EOF\ngit push --force\nEOF',
+    'echo "$(git push --force)"',
+    String.raw`bash -c "bash -c \"git push -f\""`,
+    'echo "unterminated git push --force',
+  ]) {
+    assert.equal(guardGit(cmd, featRepo).code, 2, cmd);
+  }
+  assert.equal(guardGit('bash -c "git commit -m x"', mainRepo).code, 2);
+  assert.equal(guardGit('bash -c "git push --force-with-lease"', featRepo).code, 0);
+});
+
 test('recursive delete outside the project is blocked, inside passes', () => {
   for (const cmd of ['rm -rf /', 'rm -rf ~', 'rm -rf $HOME', 'rm -rf ..', 'rm -rf .', 'rm -rf *', 'rm -fr /tmp/other', 'sudo rm -rf /']) {
     assert.equal(guardGit(cmd, featRepo).code, 2, cmd);
   }
   assert.equal(guardGit('Remove-Item -Recurse -Force ..', featRepo, 'PowerShell').code, 2);
   assert.equal(guardGit('Remove-Item -Recurse -Force C:\\Windows', featRepo, 'PowerShell').code, 2);
+  assert.equal(guardGit('bash -c "rm -rf /"', featRepo).code, 2);
   assert.equal(guardGit('rm -rf node_modules', featRepo).code, 0);
+  assert.equal(guardGit('rm -rf dist', featRepo).code, 0);
   assert.equal(guardGit('rm -rf ./dist build', featRepo).code, 0);
   assert.equal(guardGit('rm file.txt', featRepo).code, 0);
   assert.equal(guardGit('Remove-Item -Recurse -Force dist', featRepo, 'PowerShell').code, 0);

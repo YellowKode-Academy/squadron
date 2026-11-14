@@ -1,5 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "env": {
+    "SQUADRON_MAIN_COMMITTERS": ""
+  },
   "permissions": {
     "defaultMode": "acceptEdits",
     "allow": [
@@ -41,7 +44,6 @@
       "Read(./.env.production)",
       "Read(./**/*.pem)",
       "Read(./.mcp.json)",
-      "Bash(rm -rf *)",
       "Bash(git push --force *)",
       "Bash(git push -f *)",
       "PowerShell(git push --force *)",
