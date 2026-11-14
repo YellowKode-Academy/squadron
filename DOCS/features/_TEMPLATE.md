@@ -2,6 +2,8 @@
 
 > Copy this file to `DOCS/features/<feature-name>.md` and fill it in.
 > **Nothing gets built before this exists.**
+>
+> Touches security (webhook, OAuth, payment, third-party API)? Use `_TEMPLATE-integration.md`. Unsure it's feasible? Use `_TEMPLATE-spike.md`. A text tweak needs no spec.
 
 **Status:** draft | approved | building | live
 **Card:** [link]
