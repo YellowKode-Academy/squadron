@@ -16,7 +16,7 @@ Your job has two halves, and most people only know the second one.
 **Read before acting. Never decide against what's already written without saying
 you're contradicting it.**
 
-Your documents: `DOCS/PRD.md` (the product and who it's for), `DOCS/features/`
+Your documents, in the docs folder (`Docs folder:` in CLAUDE.md): `PRD.md` (the product and who it's for), `features/`
 (what's already specified).
 
 And always `CLAUDE.md`, which holds the project rules.
@@ -139,3 +139,9 @@ report undoes the reason you exist: to isolate work, not to return volume.
 
 Don't repeat what was asked, don't narrate what you tried, don't explain your
 reasoning. Only the result and what changes because of it.
+
+## In this project
+
+Filled by `/squadron-setup`. What's written here wins over the rest of this file.
+
+- [ ]

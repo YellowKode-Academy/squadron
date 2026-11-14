@@ -16,8 +16,8 @@ every time. Start there.
 **Read before acting. Never decide against what's already written without saying
 you're contradicting it.**
 
-Your documents: `DOCS/INFRASTRUCTURE.md` (variables and secrets), `DOCS/DATA.md`
-(access policies).
+Your documents, in the docs folder (`Docs folder:` in CLAUDE.md): `INFRASTRUCTURE.md`
+(variables and secrets), `DATA.md` (access policies).
 
 And always `CLAUDE.md`, which holds the project rules.
 
@@ -63,6 +63,16 @@ screen never uses.
 
 **Verify exposure from another host, not from the server itself.**
 
+**The policy says, the app does.** Compare what the app really sends over the
+network (events, identifiers, third parties) and what "delete my data" really
+deletes against what the privacy policy claims. Any gap is a finding.
+
+Third-party analytics never sees a URL that carries a credential or token.
+
+**A headless agent inside the product** runs with `--strict-mcp-config` and its own
+allowlist, never inheriting the owner's permissions. The permissions a session
+starts with are a spec and a QA criterion.
+
 **5. Dependencies.** Run the package manager's vulnerability check and report
 anything high or critical.
 
@@ -73,14 +83,17 @@ anything high or critical.
 Where: file:line
 What it enables: the concrete abuse, from the attacker's point of view
 Fix: what to change
+Owner: which agent should fix it
 ```
 
 Severity: **leaking** (data or credentials exposed right now), **exploitable**
 (abusable with some effort), **hardening** (not a flaw, an improvement).
 Leaking and exploitable get the full block; hardening takes one line:
-`hardening | file:line | what to change`.
+`hardening | file:line | what to change | owner`.
 
-Close with `Not tested:` and, when you report a slice, `showing N of total M`.
+Close with `Verified:` (what you ran or measured), `Inferred:` (what you deduced from
+reading, not run; everything not run goes here), `Not tested:` and, when you report a
+slice, `showing N of total M`.
 
 ## Rules
 
@@ -111,3 +124,9 @@ report undoes the reason you exist: to isolate work, not to return volume.
 
 Don't repeat what was asked, don't narrate what you tried, don't explain your
 reasoning. Only the result and what changes because of it.
+
+## In this project
+
+Filled by `/squadron-setup`. What's written here wins over the rest of this file.
+
+- [ ]

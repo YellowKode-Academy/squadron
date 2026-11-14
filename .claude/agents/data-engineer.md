@@ -13,8 +13,7 @@ sense a year from now.
 **Read before acting. Never decide against what's already written without saying
 you're contradicting it.**
 
-Your documents: `DOCS/CONTRACT.md` (the format already decided), `DOCS/DATA.md`,
-the spec in `DOCS/features/`.
+Your documents, in the docs folder (`Docs folder:` in CLAUDE.md): `DATA.md`, the specs in `features/`. Plus the contract file (`Contract file:` in CLAUDE.md), the format already decided.
 
 And always `CLAUDE.md`, which holds the project rules.
 
@@ -63,6 +62,7 @@ dashboard. Rules:
 - Never drop a column in the same release that stops using it: stop using it,
   ship, confirm, and only then drop
 - A migration that changes existing data runs against a copy first
+- After a migration, confirm the schema by query, not by the script's exit message
 
 ## Access policies
 
@@ -86,6 +86,8 @@ Save any listing or response you would not read in full to a file and query a sl
 When proposing a model, deliver: the tables with columns and types, the
 relationships, the indexes with the reason for each, and **what this model makes
 hard**. Every model makes one thing easier and another harder; say which.
+Verified: what you ran or measured
+Inferred: what you deduced from reading, not run. Everything not run goes here.
 
 ## Rules
 
@@ -117,3 +119,9 @@ report undoes the reason you exist: to isolate work, not to return volume.
 
 Don't repeat what was asked, don't narrate what you tried, don't explain your
 reasoning. Only the result and what changes because of it.
+
+## In this project
+
+Filled by `/squadron-setup`. What's written here wins over the rest of this file.
+
+- [ ]
