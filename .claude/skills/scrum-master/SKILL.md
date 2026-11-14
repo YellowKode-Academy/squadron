@@ -90,6 +90,11 @@ At the end, record three things:
 
 One change per cycle. A list of ten improvements changes nothing.
 
+Then write it back: the change goes into the file that will be read next cycle (an
+agent's "In this project" section, Gotchas in CLAUDE.md, or this skill), dated, with
+the why. Also check the cycle's corrections from the owner: any that `/tech-lead`
+didn't write back yet, write now. A lesson that stays in the retro notes is lost.
+
 ## Card format
 
 ```

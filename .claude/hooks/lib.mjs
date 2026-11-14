@@ -69,16 +69,99 @@ const ARG = String.raw`(?:"[^"]*"|'[^']*'|\S+)`;
 const GIT_OPTS = String.raw`(?:\s+(?:-[Cc]\s+${ARG}|--[\w-]+(?:=\S+)?|-[pP]))*`;
 const SEPARATOR = /&&|\|\||[;|\n]/;
 
-// Finds every `git [opts] <sub>` in a command line, chained or not.
+// Words that run their quoted argument as a command: `bash -c "..."`, `eval "..."`,
+// `powershell -Command "..."`, `cmd /c "..."`, `ssh host "..."`. Text after one of these
+// (or before a pipe into one) is inspected as a command; any other quoted text is plain data.
+const SHELL_WORDS = new Set(['bash', 'sh', 'zsh', 'dash', 'ksh', 'fish', 'csh', 'tcsh', 'eval', 'powershell', 'pwsh',
+  'cmd', 'iex', 'invoke-expression', 'start-process', 'ssh', 'su', 'wsl', 'xargs', 'nohup']);
+const SHELL_SINK = /\|\s*(?:\S*[\\/])?(?:bash|sh|zsh|dash|ksh|fish|powershell|pwsh|cmd)(?:\.exe)?\b/i;
+
+function hasShellWord(before) {
+  const seg = before.split(SEPARATOR).pop();
+  return seg.split(/\s+/).some((w) => SHELL_WORDS.has(w.replace(/^.*[\\/]/, '').replace(/\.exe$/i, '').toLowerCase()));
+}
+
+// Finds quoted strings and heredoc bodies in a command line. Returns
+// [{ start, end, text, dq }] where start/end bound the CONTENT (without the quotes).
+// An unterminated quote is not a span: its text stays visible to the checks (fail closed).
+function quotedSpans(cmd) {
+  const spans = [];
+  let pending = null;
+  let i = 0;
+  while (i < cmd.length) {
+    const c = cmd[i];
+    if (c === '\n' && pending) {
+      spans.push({ start: pending.start, end: pending.end, text: cmd.slice(pending.start, pending.end), dq: false, ref: pending.op });
+      i = pending.end;
+      pending = null;
+      continue;
+    }
+    if (c === '\\' && (cmd[i + 1] === '"' || cmd[i + 1] === "'" || cmd[i + 1] === '\\')) { i += 2; continue; }
+    if (c === '<' && cmd[i + 1] === '<' && cmd[i + 2] !== '<' && !pending) {
+      const h = /^<<-?[ \t]*(['"]?)([A-Za-z_]\w*)\1/.exec(cmd.slice(i));
+      if (h) {
+        const nl = cmd.indexOf('\n', i);
+        if (nl !== -1) {
+          const bodyStart = nl + 1;
+          const close = new RegExp(`^[ \\t]*${h[2]}[ \\t]*$`, 'm').exec(cmd.slice(bodyStart));
+          pending = { op: i, start: bodyStart, end: close ? bodyStart + close.index : cmd.length };
+        }
+        i += h[0].length;
+        continue;
+      }
+    }
+    if (c === '"' || c === "'") {
+      let j = i + 1;
+      let closed = -1;
+      while (j < cmd.length) {
+        if (c === '"' && cmd[j] === '\\' && (cmd[j + 1] === '"' || cmd[j + 1] === '\\')) { j += 2; continue; }
+        if (c === '"' && cmd[j] === '`' && cmd[j + 1] === '"') { j += 2; continue; }
+        if (cmd[j] === c) { closed = j; break; }
+        j++;
+      }
+      if (closed === -1) { i++; continue; }
+      let text = cmd.slice(i + 1, closed);
+      if (c === '"') text = text.replace(/\\(["\\])/g, '$1');
+      spans.push({ start: i + 1, end: closed, text, dq: c === '"', ref: i });
+      i = closed + 1;
+      continue;
+    }
+    i++;
+  }
+  return spans;
+}
+
+// Command texts hidden inside quotes that DO run: the argument of bash -c / eval /
+// powershell -Command / cmd /c ..., text piped into a shell, and $(...) or backtick
+// substitutions inside double quotes. Recursive, depth-limited. Plain quoted data is not returned.
+export function innerCommands(command, depth = 0) {
+  if (depth > 4) return [];
+  const out = [];
+  const sink = SHELL_SINK.test(command);
+  for (const sp of quotedSpans(command)) {
+    if (sink || hasShellWord(command.slice(0, sp.ref))) out.push(sp.text);
+    else if (sp.dq) {
+      for (const m of sp.text.matchAll(/\$\(([^)]*)\)|`([^`]*)`/g)) out.push(m[1] ?? m[2]);
+    }
+  }
+  return out.flatMap((t) => [t, ...innerCommands(t, depth + 1)]);
+}
+
+// Finds every `git [opts] <sub>` in a command line, chained or not, outside quoted data.
 // Returns [{ opts, rest }]: opts is the text between git and sub, rest is what
-// follows up to the next command separator.
+// follows up to the next command separator. A match inside quotes counts only when
+// the quotes belong to a shell wrapper (see innerCommands).
 export function findGit(command, sub) {
-  const re = new RegExp(String.raw`\bgit(${GIT_OPTS})\s+${sub}\b`, 'g');
   const found = [];
-  for (const m of command.matchAll(re)) {
-    const after = command.slice(m.index + m[0].length);
-    const cut = after.search(SEPARATOR);
-    found.push({ opts: m[1] || '', rest: cut === -1 ? after : after.slice(0, cut) });
+  for (const text of [command, ...innerCommands(command)]) {
+    const spans = quotedSpans(text);
+    const re = new RegExp(String.raw`\bgit(${GIT_OPTS})\s+${sub}\b`, 'g');
+    for (const m of text.matchAll(re)) {
+      if (spans.some((sp) => m.index >= sp.start && m.index < sp.end)) continue;
+      const after = text.slice(m.index + m[0].length);
+      const cut = after.search(SEPARATOR);
+      found.push({ opts: m[1] || '', rest: cut === -1 ? after : after.slice(0, cut) });
+    }
   }
   return found;
 }

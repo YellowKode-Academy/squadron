@@ -4,8 +4,7 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-F5D300?style=flat-square" alt="MIT"></a>
-  <img src="https://img.shields.io/badge/agents-10-3A3A3A?style=flat-square" alt="10 agents">
-  <img src="https://img.shields.io/badge/skills-7-3A3A3A?style=flat-square" alt="7 skills">
+  <img src="https://img.shields.io/badge/built_for-Claude_Code-3A3A3A?style=flat-square" alt="Built for Claude Code">
 </p>
 
 A starting point for projects run by one person and a team of AI agents, with a
@@ -46,8 +45,9 @@ CHANGELOG.md              what changed in each version
 .gitattributes            line endings (LF, CRLF for .ps1 and .cmd)
 .claude/
 ├── hooks/                guard hooks (Node) and their tests
-├── agents/               10 specialists, each with its own context
-└── skills/               7 skills, running in the main conversation
+├── state/                experimental: task state in SQLite (see Requirements)
+├── agents/               specialists, each with its own context
+└── skills/               skills, running in the main conversation
 DOCS/
 ├── PRD.md                the product, for whom, and what it does NOT do
 ├── CONTRACT.md           the contract and its rules
@@ -55,11 +55,16 @@ DOCS/
 ├── DESIGN-SYSTEM.md      tokens: color, spacing, typography
 ├── DATA.md               schema, migrations, access policies
 ├── INFRASTRUCTURE.md     server, deploy, DNS, secrets
+├── HANDOFF.md            where the last session stopped; the next one starts here
+├── HUMAN-CHECK.md        15 minutes of a person, after two robot rounds
+├── examples/             a filled spec, report and "In this project" section
 └── features/
-    └── _TEMPLATE.md      the IFO spec
+    ├── _TEMPLATE.md              the IFO spec for a feature
+    ├── _TEMPLATE-integration.md  external integration that touches security
+    └── _TEMPLATE-spike.md        feasibility: hypothesis, number, result
 ```
 
-### The seven skills
+### The skills
 
 They run in the main conversation. That's the only place agents can be dispatched
 from.
@@ -74,7 +79,7 @@ from.
 | `/checkup` | how is the live project, with numbers |
 | `/ship` | put it in production, with the guards |
 
-### The ten agents
+### The agents
 
 Default list. The truth is the files in `.claude/agents/`.
 
@@ -95,8 +100,9 @@ Default list. The truth is the files in `.claude/agents/`.
 
 ## How to use it
 
-**1. Bring it into your project.** Clone it, download the zip, use it as a GitHub
-template, copy the folders by hand. Doesn't matter.
+**1. Bring it into your project.** Two paths:
+
+*New project:* this repository becomes the project.
 
 ```bash
 git clone https://github.com/YellowKode-Academy/squadron my-project
@@ -105,14 +111,23 @@ rm -rf .git && git init
 cp .mcp.example.json .mcp.json
 ```
 
-**2. Configure it.** Open Claude Code in the folder and run:
+*Existing project:* copy only `.claude/agents/`, `.claude/skills/`, `.claude/hooks/`
+and `DOCS/features/` + `DOCS/examples/` into it. Don't copy `CLAUDE.md`, the other
+documents, `.mcp.example.json` or `settings.json` over yours: setup adds to them
+and shows each change as a diff first.
+
+**2. Configure it.** Open Claude Code in the folder that holds `.claude/` (opened one
+level above, the agents are invisible) and run:
 
 ```
 /squadron-setup
 ```
 
-It looks at what already exists in the directory, asks five questions about your
-project, and adapts `CLAUDE.md` and the documents to your context.
+It looks at what already exists in the directory and tells which path it is on. New
+project: it asks five questions and adapts `CLAUDE.md` and the documents. Existing
+project: it only adds, a `## Squadron` section at the end of your `CLAUDE.md`, an
+`## In this project` section in each agent, and a map from our document names to
+yours. Your rules win where the two differ.
 
 The five:
 
@@ -122,7 +137,8 @@ The five:
 4. Does it have a UI, a server, a database? Where does it ship?
 5. Will it handle logins, payments or personal data?
 
-Each one changes something real — above all **which agents get deleted**.
+Each one changes something real — above all **what to keep and what to delete**,
+recommended piece by piece with the evidence from your project. You decide.
 
 **Already have a project document?** Pass it straight in, and it only asks what's
 missing:
@@ -156,8 +172,9 @@ not list one you just added, restart the session.
 Flags and settings keys age: this was written against the Claude Code docs of
 2026-11-07 (checked with 2.1.197).
 
-**Permissions.** `.claude/settings.json` denies reading secrets, force pushes and
-`rm -rf`, asks before push and merge, and allows only narrow commands. If you
+**Permissions.** `.claude/settings.json` denies reading secrets and force pushes,
+asks before push and merge, and allows only narrow commands (dangerous recursive
+deletes are the hook's job, so `rm -rf dist` still works). If you
 approve the same safe command again and again, add a narrow allow rule. Never
 widen to the whole tool. Want it stricter? Set `"defaultMode": "default"`.
 
@@ -184,6 +201,39 @@ missing, the hook command fails with another code and the action goes through. O
 Claude Code 2.1.295 or later you can add `"onFailure": "block"` to each hook
 entry in `settings.json` to block in that case too; without Node that blocks every
 shell command, so install Node or delete the `hooks` block.
+
+**Who may commit on main.** Nobody, by default. If you commit on main on purpose,
+put your git `user.name` in `.claude/settings.json`:
+`"env": { "SQUADRON_MAIN_COMMITTERS": "Your Name" }` (comma list, case-insensitive).
+Everyone else keeps working on branches. It guards against accidents, not against
+someone who rewrites their own git config.
+
+**Testing the guards.** Put the case in a file (`echo '...' > case.json`) instead of
+typing a dangerous command inline. Quoted text is treated as data, but `bash -c`,
+`eval`, `powershell -Command` and `cmd /c` are inspected, and when in doubt the hook
+blocks.
+
+### Experimental: state in SQLite
+
+Markdown stays the place for meaning (specs, briefs, decisions).
+`.claude/state/state.mjs` keeps state that changes often (tasks, agent, status,
+model, tool calls, tokens, timestamps) in a local, git-ignored `squadron.db`. It
+needs **Node >= 22.13** (built-in `node:sqlite`, no packages). On Node 20 it prints
+one line and exits; the hooks are unaffected.
+
+```bash
+node .claude/state/state.mjs init
+node .claude/state/state.mjs add "Password reset" --agent backend-developer --spec DOCS/features/password-reset.md
+node .claude/state/state.mjs start 1
+node .claude/state/state.mjs done 1 --tool-calls 120 --tokens 180000 --model sonnet
+node .claude/state/state.mjs list --status open
+node .claude/state/state.mjs report   # per agent and model
+node .claude/state/state.mjs export   # writes .claude/state/STATE.md for anyone to read
+```
+
+Also `block <id> "<reason>"`. To judge it, run one cycle with it and one without, and
+compare the time spent re-finding state, the handoff size, and how visible the
+cost was. Delete the folder if it doesn't pay.
 
 ---
 
@@ -238,7 +288,8 @@ What you'll probably want to change:
 | Where | What |
 |---|---|
 | `CLAUDE.md` | everything in brackets, the conventions, the commands |
-| `CLAUDE.md` `Contract file:` line | the contract path if it isn't `src/lib/api.ts` |
+| `CLAUDE.md` lines under "The project" | contract file, docs folder, test and deploy commands, staging, test account |
+| `CLAUDE.md` › Budget | how many agents at once, when to start fresh, which model for which work |
 | `DOCS/DESIGN-SYSTEM.md` | the spacing scale and the tokens |
 | `.claude/agents/*` | what each specialist always checks in **your** project |
 | `.claude/settings.json` | the deny, ask and allow rules, and the MCPs you actually use |
@@ -261,7 +312,8 @@ Honest suggestions:
 - **Not deploying it yourself?** Delete `devops-engineer`.
 - **No database?** Delete `data-engineer`.
 - **No interface?** Delete `ux-designer` and `frontend-developer`.
-- **Working alone with no board?** Delete `scrum-master`.
+- **Working alone, no board, features already decided?** `scrum-master` and
+  `product-manager` will probably sit idle. Setup recommends it with your evidence.
 - **Never evaluating new technology?** Delete `researcher`.
 - **No deploy of your own?** Delete `ship` (and `devops-engineer`).
 - **Nothing in production yet?** Delete `checkup`.
@@ -294,6 +346,28 @@ works on an internet that doesn't exist.
 **The agents' context budget.** Each one has a line limit on its report. A
 subagent exists to hold volume away from the main conversation — if it returns a
 huge report, it undoes its own reason for existing.
+
+---
+
+## Spend less, lose less
+
+Running a team of agents for a week teaches the same lessons every time. They are in
+`CLAUDE.md` › Budget and in `/tech-lead`, as defaults to adapt:
+
+- **Seniority by model.** Mechanical work on the cheapest model, engineering on the
+  middle one, judgment on the top one. Set per call.
+- **A ceiling on parallel agents**, and a fresh agent instead of resuming one with a
+  huge history.
+- **Scripts wait, agents don't.** Long tests write to a file; the agent reads it once.
+- **Two robot rounds, then a person.** AI review stops improving things; 15 minutes
+  of someone using it doesn't (`DOCS/HUMAN-CHECK.md`).
+- **The lesson goes back in writing.** Every correction becomes a line in the agent's
+  file or in Gotchas, so it isn't repeated next week.
+- **Short sessions, one handoff file** (`DOCS/HANDOFF.md`), so a crash or a new
+  session loses nothing.
+- **Agents talk.** A finding goes to the agent still working on it, not into a
+  reopened task.
+- **Markdown for meaning, a database for state** (experimental, `.claude/state/`).
 
 ---
 
@@ -338,4 +412,5 @@ real life.
 
 ---
 
-Tested with Claude Code 2.1.197 on 2026-11-07.
+Tested with Claude Code 2.1.197 on 2026-11-07. The v0.3 rules come from real
+projects run with the squadron; v0.3 itself has not been through a full project yet.

@@ -18,8 +18,7 @@ Together, the product looks like five products stitched together.
 **Read before acting. Never decide against what's already written without saying
 you're contradicting it.**
 
-Your documents: `DOCS/DESIGN-SYSTEM.md` (the tokens), the spec in
-`DOCS/features/`.
+Your documents, in the docs folder (`Docs folder:` in CLAUDE.md): `DESIGN-SYSTEM.md` (the tokens), the specs in `features/`.
 
 And always `CLAUDE.md`, which holds the project rules.
 
@@ -60,6 +59,9 @@ When the application is running, navigate the screens and compare them side by
 side. Reading the code catches some deviations. Seeing the screen catches the
 rest, especially alignment and vertical rhythm.
 
+If you have no screen you can render, say so and review the code only. Never claim
+a visual review you didn't do.
+
 ## How you report
 
 Group by type of deviation, not by screen, because the same mistake usually
@@ -71,8 +73,12 @@ Where: list of files and lines
 Should be: the correct token or component
 ```
 
+When a round raises the standard of one screen, open cards in the same cycle for its
+sibling screens so they don't drift.
+
 Finish with **the highest-leverage fix**: which single change eliminates the most
-deviations at once, then `Not tested:` (screens or states you did not open).
+deviations at once, then `Not tested:` (screens or states you did not open). Also `Verified:` (what you ran or measured)
+and `Inferred:` (what you deduced from reading, not run; everything not run goes here).
 
 ## Rules
 
@@ -93,3 +99,9 @@ report undoes the reason you exist: to isolate work, not to return volume.
 
 Don't repeat what was asked, don't narrate what you tried, don't explain your
 reasoning. Only the result and what changes because of it.
+
+## In this project
+
+Filled by `/squadron-setup`. What's written here wins over the rest of this file.
+
+- [ ]

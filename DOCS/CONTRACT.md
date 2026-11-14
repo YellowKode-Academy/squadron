@@ -134,6 +134,23 @@ on purpose, and the document is updated with it.
 
 ---
 
+## When the API already exists
+
+The project has a real backend and nothing to mock. The contract still exists, in
+a different shape:
+
+- It can be a **typed client**, an **OpenAPI file**, or the **DTOs** the backend
+  already publishes.
+- Point `Contract file:` in `CLAUDE.md` at it. Same obligations: one place, nobody
+  invents a field.
+- **Mock-first rules don't apply** to a real backend: no 300ms delay, no mocked
+  data, no forced-error flag. Use the real error cases (4xx, 5xx, timeout).
+- In languages without async by default (Go, PHP), "everything async" means
+  **every call can fail and take time**: handle errors, set timeouts, and give the
+  caller a loading and an error state.
+
+---
+
 ## Current state
 
 > Fill this in as the project moves.

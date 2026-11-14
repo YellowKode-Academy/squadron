@@ -1,18 +1,63 @@
 ---
 name: squadron-setup
-description: Configures or re-adjusts this repository for the project at hand. Asks five questions, fills in CLAUDE.md and the documents, and recommends which agents to delete. Also accepts a file or link describing the project. Use it the first time and whenever something changes. Invoke with /squadron-setup, or /squadron-setup adjust for <thing>, or /squadron-setup <file.md or URL>.
+description: Configures or re-adjusts the squadron for the project at hand. New project - asks five questions and fills in CLAUDE.md and the documents. Existing project - only adds - a Squadron section in its CLAUDE.md, an "In this project" section per agent, nothing overwritten, every change shown as a diff first. Recommends what to keep and delete, with evidence. Also accepts a file or link describing the project. Invoke with /squadron-setup, /squadron-setup adjust for <thing>, or /squadron-setup <file.md or URL>.
 ---
 
 # Setup
 
 You turn a generic skeleton into **this person's** project.
 
-The repository arrives full of `[ ]`. Your job is to replace those with real
-decisions, and to **delete what will not be used**.
+The squadron arrives full of `[ ]`. Your job is to replace those with real
+decisions, and to **recommend, piece by piece, what this project doesn't need**.
 
 **This skill does not run only once.** Projects change: someone joins, a database
 shows up, the product becomes something else. Whenever that happens, run it
 again.
+
+---
+
+## Before anything: which install is this?
+
+| Signal | Path |
+|---|---|
+| This repository is the project (cloned to start something new) | **New project**: fill everything in, as the rest of this file says |
+| The squadron files were copied into a project that already has code, history or its own `CLAUDE.md` | **Existing project**: only add. Read "Existing project" below first; it overrides the rest where they differ |
+
+Check where Claude Code is open: agents and skills load from the `.claude/` of the
+folder the window opens. Opened one level above (a workspace holding several repos),
+they are invisible. Install where the window opens, or tell the person to reopen.
+
+### Existing project
+
+The project's own files are the source of truth. You add next to them:
+
+- **`CLAUDE.md`: never create, replace or rewrite it.** Add one `## Squadron`
+  section at the end, shown as a diff and written only after an OK. It holds: the
+  version line, the six lines of "The project" (`Contract file:`, `Docs folder:`,
+  `Test command:`, `Deploy command:`, `Staging:`, `Test account:`), a map from the
+  squadron's doc names to the project's, which squadron rules don't apply here and
+  why, which pieces were skipped, and "the project's rules above win wherever the
+  two differ". Example: `examples/in-this-project-example.md` in the docs folder.
+- **Docs: compare names without case.** `docs/` and `DOCS/`, `architecture.md` and
+  `ARCHITECTURE.md` are the same file on Windows and macOS, and copying ours
+  overwrites theirs. Equivalent doc exists → map it in the Squadron section, copy
+  nothing. Don't create empty documents; copy only the `features/` templates.
+- **The contract is what already exists.** A typed client, an OpenAPI file or DTOs:
+  point `Contract file:` at it and drop the mock-first rules. Never treat a real
+  client as a mock, and never generate a mock contract next to a real API.
+- **Agents: fill their `## In this project` section** (stack, paths they own, test
+  command, what not to touch). Don't rewrite the agent.
+- **`.mcp.json` is the owner's: never read, create or change it.** `.claude/settings.json`
+  that already exists: show the merge as a diff, never overwrite.
+- **Piece by piece, the project's own wins.** A skill whose job the project already
+  does (its own deploy command, its own feature flow) → skip ours and say so; at most
+  add one line to theirs pointing at `/spec` and `/tech-lead`.
+- **Owner commits on main by design?** Put their git `user.name` in
+  `SQUADRON_MAIN_COMMITTERS` (`.claude/settings.json` › `env`). Everyone else still
+  works on branches.
+- **Run `git check-ignore -v` on every path you copy.** A project that ignores
+  `.claude/*.md` makes a copied file vanish from git without warning; move it or
+  tell the owner.
 
 ---
 
@@ -89,8 +134,12 @@ the question shouldn't exist.
 
 | Answer | What changes |
 |---|---|
-| Alone | `scrum-master` probably goes: ceremony and board cost more than they help |
-| With others | `scrum-master` stays, and a board starts to make sense |
+| Alone, no board, features already decided | recommend removing `scrum-master` and `product-manager`: in real projects run like this neither was called once. The owner decides |
+| Alone, but with a board, or not sure what to build | keep the one that does the job: `scrum-master` for the board, `product-manager` for deciding what's next |
+| With others | `scrum-master` stays, and a board starts to make sense. Ask who decides scope: that person is who `product-manager` serves |
+
+Recommend a removal only with evidence from this project (who decides, whether a
+board exists, what the project's own skills already do), never by default.
 
 ### 2. Is this a new project, or is there code already running?
 
@@ -125,6 +174,11 @@ If it ships on a platform that handles everything, `devops-engineer` goes, and s
 does the `ship` skill. Same if it is not deployed yet. If `Stage` is `ideation`,
 `checkup` goes too: there is nothing live to check.
 
+Ask inside this question: **"Is there a staging environment? If not, is there a test
+account in production?"** Fill `Staging:` and `Test account:` (where the credentials
+live, never their value). No staging and no test account: ask for one. Without it,
+QA can't check production right after a deploy.
+
 Ask inside this question: **"Does it call paid APIs, send email or deploy by itself?"**
 An answer of "none of that" removes the Limits and Destructive operations blocks
 from the Operating rules in CLAUDE.md. Any other answer keeps them.
@@ -144,22 +198,28 @@ The one with the biggest consequence.
 ## What you fill in
 
 ### `CLAUDE.md`
-Name, what it is, stage. Real commands (take them from `package.json`).
-Conventions matching what this person actually uses. The contract path, if it
-isn't `src/lib/api.ts`: fill the `Contract file:` line.
+Name, what it is, stage, and the six lines under "The project": `Contract file:`,
+`Docs folder:`, `Test command:`, `Deploy command:`, `Staging:`, `Test account:`. Every
+agent reads them instead of assuming a path. Real commands (take them from
+`package.json`, `Makefile`, `go.mod`, `composer.json`). Conventions matching what this
+person actually uses. Existing project: all of this goes in the Squadron section.
 
 ### Gotchas in `CLAUDE.md`
 Ask: "Anything that has to be updated in two places, or fails only in production?"
 Write each answer as "when you add X, also update Y". Leave the example out when
 there is nothing to record. Remove the Operating rules that do not apply (no
-deploy, no paid API, no UI).
+deploy, no paid API, no UI). Say that Gotchas keeps growing: `/tech-lead` writes
+each correction back at the close of a delivery.
 
-### `DOCS/PRD.md`
+The document sections below use the default names; in an existing project, map
+them instead.
+
+### `PRD.md` (docs folder)
 Only what they can answer now. **Mark what stayed open** instead of guessing.
 Push on the *what the product does NOT do* field: open scope is a project that
 never finishes.
 
-### `DOCS/ARCHITECTURE.md`
+### `ARCHITECTURE.md`
 The stack, and the first decision on record. If the stack came pre-decided,
 record it as a decision anyway, with the real reason.
 
@@ -167,10 +227,11 @@ record it as a decision anyway, with the real reason.
 If the contract file doesn't exist **and the project has a UI and no backend**,
 create it with one sample entity following the rules: `async`, 300ms delay, a way
 to force an error, and no fake data outside that file. In the other cases, only
-record the path. See `DOCS/CONTRACT.md`.
+record the path. See `CONTRACT.md` in the docs folder.
 
 ### MCP
-If `.mcp.json` doesn't exist, copy it from `.mcp.example.json`. It ships with
+New project: if `.mcp.json` doesn't exist, copy it from `.mcp.example.json`.
+Existing project: don't touch `.mcp.json`; show what to add and let the owner do it. It ships with
 Playwright, which is what lets `quality-assurance` actually open the application
 instead of only reading code, and what lets `researcher` open documentation and
 test tools.
@@ -196,8 +257,10 @@ Too many agents make routing worse: similar descriptions confuse who calls whom.
 An agent that is never called is not neutral — it costs context and pollutes the
 choice.
 
-Build the list from answers 1, 4 and 5 (and the `ship` and `checkup` rules above), show what would remain, and **ask for
-confirmation before deleting**. Deleting files is the project owner's call.
+Build the list from answers 1, 4 and 5 (and the `ship` and `checkup` rules above),
+plus what the project's own skills already cover. For each piece, give the evidence
+in one line. Show what would remain, and **ask for confirmation before deleting**.
+Deleting files is the project owner's call.
 
 **The minimum that still makes sense:** `spec`, `tech-lead`,
 `frontend-developer`, `quality-assurance`. Think first, build, and someone with
@@ -210,7 +273,8 @@ That removes the fear of deleting.
 
 ## Adapt the agents to the context
 
-Once the stack is known, swap generic for specific where it changes the outcome:
+Once the stack is known, write in each agent's `## In this project` section what
+changes the outcome (example in `examples/in-this-project-example.md`):
 
 - `frontend-developer` and `backend-developer`: the real framework
 - `quality-assurance`: this project's test command
@@ -230,15 +294,18 @@ First, prove the guards work. Run `node --version` and `git --version`. If Node 
 missing, say that the hooks are inert and offer to remove the `hooks` block. Then
 exercise each guard once on purpose: `node --test .claude/hooks/hooks.test.mjs`,
 and ask to read `.env`. Report pass/fail per guard. A guard that was never
-exercised is a guess.
+exercised is a guess. To try a guard by hand, put the dangerous text in a file and
+run the hook on it; typing it in a command makes the guard block your own test.
 
 Then report:
 
 ```
+Install: new project | existing project
 Found on my own: what you read without needing to ask
-Configured: what was filled in
+Configured: what was filled in (existing project: the diffs the owner approved)
+Skipped: squadron pieces the project already covers, and name collisions
 Still open: what they need to decide later
-Suggest deleting: what goes, and why
+Suggest deleting: what goes, with the evidence for each
 Next step: the concrete command
 ```
 

@@ -59,8 +59,18 @@ person gets out of that state.
 from it, call the `product-owner` agent first. A spec for an invented problem is
 expensive waste.
 
-**2. Write the IFO.** Copy `DOCS/features/_TEMPLATE.md` to
-`DOCS/features/<feature-name>.md` and fill it in.
+**2. Write the IFO.** Pick the template by kind, in `features/` inside the docs
+folder (`Docs folder:` in CLAUDE.md), copy it to `features/<feature-name>.md` and
+fill it in:
+
+| Kind | Template |
+|---|---|
+| A feature for the user | `_TEMPLATE.md` (15 lines of IFO) |
+| An external integration that touches security (webhook, OAuth, payment) | `_TEMPLATE-integration.md`, no line limit |
+| "Can this even work?" | `_TEMPLATE-spike.md`: hypothesis, number, result |
+| A text tweak | no spec |
+
+A filled example: `examples/spec-example.md`.
 
 Write the **title as a result for the user**, never as a technical task:
 - Bad: *"Create POST /clients endpoint"*
@@ -71,7 +81,7 @@ the contract file: field names, types, date format, error format. If nothing
 changes, write "nothing changes".
 
 This is the part that lets frontend and backend work in parallel. See
-`DOCS/CONTRACT.md`.
+`CONTRACT.md` in the docs folder.
 
 **4. Write what's out of scope.** What this feature explicitly does not do. It's
 the part that prevents the most rework and the one almost everyone skips.

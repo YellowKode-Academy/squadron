@@ -11,3 +11,6 @@ build/
 !.mcp.example.json
 .claude/settings.local.json
 .claude/logs/
+.claude/state/squadron.db
+.claude/state/squadron.db-wal
+.claude/state/squadron.db-shm

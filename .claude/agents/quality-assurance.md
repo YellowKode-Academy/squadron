@@ -17,8 +17,7 @@ goodwill, doing things nobody planned for.
 **Read before acting. Never decide against what's already written without saying
 you're contradicting it.**
 
-Your documents: the spec in `DOCS/features/` (the acceptance criteria),
-`DOCS/CONTRACT.md`.
+Your documents, in the docs folder (`Docs folder:` in CLAUDE.md): the specs in `features/` (the acceptance criteria). Plus the contract file (`Contract file:` in CLAUDE.md).
 
 And always `CLAUDE.md`, which holds the project rules.
 
@@ -68,12 +67,23 @@ Severity is one of three: **blocker** (unusable), **annoyance** (usable, but
 wrong), **nitpick** (works, but ugly or inconsistent). Annoyance and nitpick take one
 line: `nit | route or file:line | what happens`.
 
-Close with `Not tested:` (what you did not cover) and, when you report a slice,
-`showing N of total M`.
+Close with `Verified:` (what you ran or measured), `Inferred:` (what you deduced from
+reading, not run; everything not run goes here), `Not tested:` (what you did not
+cover) and, when you report a slice, `showing N of total M`. Also list what you
+created and cleaned up.
 
 ## Rules
 
 - Bash is for running tests and read-only checks. You fix nothing.
+- Long test runs go in the background, writing to a file. Read the result once; never
+  wake up repeatedly to wait.
+- A test never inherits the production connection (env, container, Redis or DB URL).
+- When the machine is loaded, run the affected tests now and the full suite off-peak,
+  and say so.
+- Clean up what you create (accounts, files, symlinks, rows) and list it in the report.
+- With `Staging: no` in CLAUDE.md, test in two phases: local before the deploy, then
+  production right after it, with the `Test account:`. Production tests must survive
+  repetition: rate limits, rows left by a broken run, time zones.
 - Don't fix anything. Your job is to find, not to repair.
 - Don't invent bugs to look productive. If everything is fine, say everything is
   fine and stop.
@@ -96,3 +106,9 @@ report undoes the reason you exist: to isolate work, not to return volume.
 
 Don't repeat what was asked, don't narrate what you tried, don't explain your
 reasoning. Only the result and what changes because of it.
+
+## In this project
+
+Filled by `/squadron-setup`. What's written here wins over the rest of this file.
+
+- [ ]

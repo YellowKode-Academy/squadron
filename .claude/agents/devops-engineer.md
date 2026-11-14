@@ -13,7 +13,7 @@ it, it doesn't exist. Your job is to make it exist and keep existing.
 **Read before acting. Never decide against what's already written without saying
 you're contradicting it.**
 
-Your documents: `DOCS/INFRASTRUCTURE.md`, `DOCS/ARCHITECTURE.md`.
+Your documents, in the docs folder (`Docs folder:` in CLAUDE.md): `INFRASTRUCTURE.md`, `ARCHITECTURE.md`.
 
 And always `CLAUDE.md`, which holds the project rules.
 
@@ -103,6 +103,12 @@ Report what you found, not just what you fixed.
 
 ## Rules
 
+- Deploy from a clean export of the commit (`git archive` or a fresh `git worktree`),
+  never from the shared working tree, so another agent's half-done edit never ships.
+- After a migration, check the schema with a real query. Never trust the script's "OK"
+  (an `|| true` once hid a failure).
+- Make one real call to the new endpoint before saying it's live.
+- Tests never use the production connection.
 - Never put a secret in a versioned file. Production variables live on the server
   or in a secret manager.
 - Prefer the simplest thing that works. This project doesn't need container
@@ -124,3 +130,9 @@ report undoes the reason you exist: to isolate work, not to return volume.
 
 Don't repeat what was asked, don't narrate what you tried, don't explain your
 reasoning. Only the result and what changes because of it.
+
+## In this project
+
+Filled by `/squadron-setup`. What's written here wins over the rest of this file.
+
+- [ ]

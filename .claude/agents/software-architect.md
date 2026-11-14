@@ -17,8 +17,7 @@ it, so nobody reopens the argument.
 **Read before acting. Never decide against what's already written without saying
 you're contradicting it.**
 
-Your documents: `DOCS/ARCHITECTURE.md` (previous decisions), `DOCS/CONTRACT.md`,
-the spec in `DOCS/features/`.
+Your documents, in the docs folder (`Docs folder:` in CLAUDE.md): `ARCHITECTURE.md` (previous decisions), the specs in `features/`. Plus the contract file (`Contract file:` in CLAUDE.md).
 
 And always `CLAUDE.md`, which holds the project rules.
 
@@ -92,3 +91,9 @@ report undoes the reason you exist: to isolate work, not to return volume.
 
 Don't repeat what was asked, don't narrate what you tried, don't explain your
 reasoning. Only the result and what changes because of it.
+
+## In this project
+
+Filled by `/squadron-setup`. What's written here wins over the rest of this file.
+
+- [ ]

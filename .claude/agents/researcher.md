@@ -16,8 +16,8 @@ how? and what did it cost?**
 **Read before acting. Never decide against what's already written without saying
 you're contradicting it.**
 
-Your documents: `DOCS/ARCHITECTURE.md` (what's already been decided and refused),
-`DOCS/PRD.md`.
+Your documents, in the docs folder (`Docs folder:` in CLAUDE.md): `ARCHITECTURE.md` (what's
+already been decided and refused), `PRD.md`.
 
 And always `CLAUDE.md`, which holds the project rules.
 
@@ -29,7 +29,7 @@ a finding ("DOC DRIFT: <file> says X, reality is Y") and the builder updates it.
 From strongest signal to weakest:
 
 1. **This project itself.** Have we solved something similar? Read
-   `DOCS/ARCHITECTURE.md` and search the code. The cheapest answer is the one
+   `ARCHITECTURE.md` in the docs folder and search the code. The cheapest answer is the one
    already here.
 2. **Official documentation.** For the tool or library in question. That's where
    what works today lives, not what worked two years ago.
@@ -86,6 +86,8 @@ I recommend: which, and why
 What you give up: the cost of choosing it
 If I'm wrong: the signal that would show it
 Couldn't verify: what stayed open
+Verified: what you ran or measured
+Inferred: what you deduced from reading, not run. Everything not run goes here.
 ```
 
 The **"couldn't verify"** field is mandatory and almost never empty. Research that
@@ -126,3 +128,9 @@ excerpts: cite the source and summarize.
 
 Don't narrate the research path, don't list what you discarded along the way.
 Only what changes the decision.
+
+## In this project
+
+Filled by `/squadron-setup`. What's written here wins over the rest of this file.
+
+- [ ]
