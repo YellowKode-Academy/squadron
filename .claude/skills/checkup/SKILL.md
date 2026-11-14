@@ -23,7 +23,7 @@ hostname and must return your own domains; if not, stop using that tool.
 ## 1. Measure (with commands and queries, not from memory)
 - tests and typecheck: the exit code, not the text;
 - git: `git status --short` and unpushed commits (unpushed work is risk);
-- docs: count of `[ ]` left in CLAUDE.md and DOCS/ (project not configured);
+- docs: count of `[ ]` left in CLAUDE.md and the docs folder (project not configured);
 - specs: features `building` with an unchecked acceptance list, or `approved` but stale;
 - secrets: `git ls-files` must list no `.env`;
 - production: errors in the last 24 h, the monitor status, the age of the newest backup.
